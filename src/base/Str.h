@@ -57,7 +57,7 @@ public:
 class stStrW {
 
 protected:
-	wchar_t	*		m_pdata;
+	wchar_t	*		    m_pdata;
 	bool				isWiderThanCurStr( const wchar_t *checkStr ) const;
 
 	static stStrMem		m_mem;
@@ -146,14 +146,14 @@ class stConstStrW : public stStrW {
 private:
 						stConstStrW();
 public:
-						stConstStrW( wchar_t *kStr ) { m_pdata = kStr; }
+	explicit		    stConstStrW( wchar_t *kStr ) { m_pdata = kStr; }
 };
 
 class stConstStrA : public stStrA {
 private:
 						stConstStrA();
 public:
-						stConstStrA( char *kStr ) { m_pdata = kStr; }
+	explicit		    stConstStrA( char *kStr ) { m_pdata = kStr; }
 };
 
 #endif /* !__STLIB_STRING_H__ */

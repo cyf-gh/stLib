@@ -292,16 +292,16 @@ stStrMem stStrW::m_mem = stStrMem();
 stStrW::stStrW
 ============
 */
-stStrW::stStrW( void ) {
+stStrW::stStrW( void ) : m_pdata( NULL ) {
     m_pdata = m_mem.NewW();
     m_mem.ZeroMemW( &m_pdata );
 }
 
-stStrW::stStrW( const wchar_t *cpy ) {
+stStrW::stStrW( const wchar_t *cpy ) : m_pdata( NULL ) {
     m_mem.NewAndCpyW( &m_pdata, cpy );
 }
 
-stStrW::stStrW( const stStrW& cpy ) {
+stStrW::stStrW( const stStrW& cpy ) : m_pdata( NULL ) {
     SetStr( cpy.Data() );
 }
 
@@ -436,7 +436,11 @@ stStrW::SetStr
 ============
 */
 stStrW &stStrW::SetStr( const wchar_t *text ) {
-    if ( NULL == m_pdata || isWiderThanCurStr( text ) ) {
+    if ( NULL == m_pdata ) {
+        m_pdata = m_mem.NewW();
+        m_mem.ZeroMemW( &m_pdata );
+    }
+    if ( isWiderThanCurStr( text ) ) {
         m_mem.SafeDelW( &m_pdata );
         m_mem.NewAndCpyW( &m_pdata, text );
     } else {
@@ -631,16 +635,16 @@ stStrMem stStrA::m_mem = stStrMem();
 stStrA::stStrA
 ============
 */
-stStrA::stStrA( void ) {
+stStrA::stStrA( void ) : m_pdata( NULL ) {
     m_pdata = m_mem.NewA();
     m_mem.ZeroMemA( &m_pdata );
 }
 
-stStrA::stStrA( const char *cpy ) {
+stStrA::stStrA( const char *cpy ) : m_pdata( NULL ) {
     m_mem.NewAndCpyA( &m_pdata, cpy );
 }
 
-stStrA::stStrA( const stStrA &cpy ) {
+stStrA::stStrA( const stStrA &cpy ) : m_pdata( NULL ) {
     this->SetStr( cpy.Data() );
 }
 
@@ -773,7 +777,11 @@ stStrA::SetStr
 ============
 */
 stStrA &stStrA::SetStr( const char *text ) {
-    if ( NULL == m_pdata || isWiderThanCurStr( text ) ) {
+    if ( NULL == m_pdata ) {
+        m_pdata = m_mem.NewA();
+        m_mem.ZeroMemA( &m_pdata );
+    }
+    if ( isWiderThanCurStr( text ) ) {
         m_mem.SafeDelA( &m_pdata );
         m_mem.NewAndCpyA( &m_pdata, text );
     } else {

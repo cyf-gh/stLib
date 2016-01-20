@@ -24,9 +24,9 @@ class stDir {
 
 private:
     stStrW              m_curPath;
-	
+
 public:
-	stStrW &			Cur() const { return m_curPath; };
+	stStrW 			    Cur() const { return m_curPath; };
     stDir &             SetCur( const stStrW &dir );
 	stDir &			    Root();
 	stDir &             Cd( const stStrW &lower );
@@ -37,7 +37,7 @@ public:
 	bool				IsExist();
 	bool				IsExist( const stStrW &lower );
 	void				Ls( std::vector<stStrW> &fileList );
-						
+
                         stDir( const stStrW &root );
                         stDir();
 	virtual             ~stDir();

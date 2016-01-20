@@ -1,6 +1,7 @@
 #include "Dir.h"
 
 using namespace stLibErrCode;
+using namespace stLibUtils;
 
 /*
 ============
@@ -26,24 +27,24 @@ stDir::IsExist
 ============
 */
 bool stDir::IsExist() {
-	WIN32_FIND_DATA  findData;
+	WIN32_FIND_DATAW findData;
     bool 			 isExist = false;
-    HANDLE 			 hfind   = FindFirstFile( m_curPath.Data(), &findData );
-	
-    isExist = ( hfind != INVALID_HANDLE_VALUE) && ( wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) ?
+    HANDLE 			 hfind   = FindFirstFileW( m_curPath.Data(), &findData );
+
+    isExist = ( hfind != INVALID_HANDLE_VALUE) && ( findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) ?
 			  true : false;
-			  
-    FindClose( hFind );
+
+    FindClose( hfind );
     return isExist;
 }
 
 bool stDir::IsExist( const stStrW &lower ) {
 	stStrW 			orgDir( m_curPath );
 	bool   			isExist = false;
-	
+
 	m_curPath.Append( L"\\" ).Append( lower );
 	isExist = IsExist();
-	m_curPath( orgDir );
+	m_curPath = orgDir;
 	return isExist;
 }
 
@@ -53,7 +54,7 @@ stDir::SetCur
 ============
 */
 stDir &stDir::SetCur( const stStrW &dir ) {
-	m_curPath( dir );
+	m_curPath = dir;
 	return *this;
 }
 
@@ -71,7 +72,7 @@ stDir &stDir::Root() {
 		st_core_return_with_var( ST_ERR_GETROOTDIR, *this );
 	}
 	m_curPath.SetStr( path );
-	m_curPath.TrimBehind( L'\\' );
+	m_curPath.TrimBack( L'\\' );
 	return *this;
 }
 
@@ -91,7 +92,7 @@ stDir::CdUp
 ============
 */
 stDir &stDir::CdUp() {
-    m_curPath.TrimBehind( L'\\' );
+    m_curPath.TrimBack( L'\\' );
     return *this;
 }
 
@@ -103,7 +104,7 @@ stDir::DirName
 stStrW stDir::DirName() {
     stStrW dirName( m_curPath );
     un32   times = dirName.RepTimesOf( L'\\' ) - 1;
-	
+
     dirName.TrimFont( L'\\', times );
     dirName.TrimSingle( stLibEnum::TM_LEFT ); // trim '\'
     return dirName;
@@ -115,8 +116,8 @@ stDir::Mkdir
 ============
 */
 stDir &stDir::Mkdir() {
-	if ( 0 == CreateDirectory( m_curPath.Data(), 0 ) ) {
-		st_core_return_with_var( ST_ERR_MKDIR, *this );	
+	if ( 0 == CreateDirectoryW( m_curPath.Data(), 0 ) ) {
+		st_core_return_with_var( ST_ERR_MKDIR, *this );
 	}
 	return *this;
 }
@@ -127,8 +128,8 @@ stDir::Rmdir
 ============
 */
 stDir &stDir::Rmdir() {
-	if ( 0 == RemoveDirectory( m_curPath.Data() ) ) {
-		st_core_return_with_var( ST_ERR_RMDIR, *this );		
+	if ( 0 == RemoveDirectoryW( m_curPath.Data() ) ) {
+		st_core_return_with_var( ST_ERR_RMDIR, *this );
 	}
 	return *this;
 }
@@ -149,11 +150,11 @@ void stDir::Ls( std::vector<stStrW> &fileList ) {
 		st_core_return( ST_ERR_LS );
 	}
 	while( FindNextFileW( hFileFind, &findData ) ) {
-		if( wcscmp( findData.cFileName, L"." ) || wcscmp( tFindData.cFileName, L".." ) ) {
+		if( wcscmp( findData.cFileName, L"." ) || wcscmp( findData.cFileName, L".." ) ) {
 			continue;
 		}
 		stStrW strPath( m_curPath );
-		strPath.Append( tFindData.cFileName );
+		strPath.Append( findData.cFileName );
 		fileList.push_back( strPath );
 	}
 }

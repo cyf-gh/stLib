@@ -20,6 +20,9 @@ class stStrW;
 ***********************************************************************/
 
 class stStream {
+
+    st_class_no_bin_cpy( stStream )
+
 protected:
 	stLibEnum::FILEOPENMODE m_mode;		// file opening mode
 	FILE *                  m_pfile;	// file handle
@@ -51,6 +54,9 @@ public:
 ***********************************************************************/
 
 class stStreamHelper {
+
+    st_class_no_bin_cpy( stStreamHelper )
+
 protected:
 	stStream				*m_pParent;
 

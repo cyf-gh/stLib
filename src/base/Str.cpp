@@ -298,7 +298,9 @@ stStrW::stStrW( void ) : m_pdata( NULL ) {
 }
 
 stStrW::stStrW( const wchar_t *cpy ) : m_pdata( NULL ) {
-    m_mem.NewAndCpyW( &m_pdata, cpy );
+    if ( cpy != NULL ) {
+        SetStr( cpy );
+    }
 }
 
 stStrW::stStrW( const stStrW& cpy ) : m_pdata( NULL ) {
@@ -447,6 +449,15 @@ stStrW &stStrW::SetStr( const wchar_t *text ) {
         wcscpy( m_pdata, text );
     }
     return *this;
+}
+
+/*
+============
+stStrW::SetStr
+============
+*/
+stStrW &stStrW::SetStr( const stStrW &text ) {
+    return SetStr( text.Data() );
 }
 
 /*
@@ -641,11 +652,11 @@ stStrA::stStrA( void ) : m_pdata( NULL ) {
 }
 
 stStrA::stStrA( const char *cpy ) : m_pdata( NULL ) {
-    m_mem.NewAndCpyA( &m_pdata, cpy );
+    SetStr( cpy );
 }
 
 stStrA::stStrA( const stStrA &cpy ) : m_pdata( NULL ) {
-    this->SetStr( cpy.Data() );
+    SetStr( cpy.Data() );
 }
 
 /*

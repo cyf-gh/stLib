@@ -44,7 +44,7 @@ bool stDir::IsExist( const stStrW &lower ) {
 
 	m_curPath.Append( L"\\" ).Append( lower );
 	isExist = IsExist();
-	m_curPath = orgDir;
+	m_curPath.SetStr( orgDir );
 	return isExist;
 }
 
@@ -54,7 +54,7 @@ stDir::SetCur
 ============
 */
 stDir &stDir::SetCur( const stStrW &dir ) {
-	m_curPath = dir;
+	m_curPath.SetStr( dir );
 	return *this;
 }
 
@@ -113,6 +113,8 @@ stStrW stDir::DirName() {
 /*
 ============
 stDir::Mkdir
+
+will crash if the dir is existed.  Check IsExist before it.
 ============
 */
 stDir &stDir::Mkdir() {
@@ -125,6 +127,8 @@ stDir &stDir::Mkdir() {
 /*
 ============
 stDir::Rmdir
+
+will crash if the dir is not existed.  Check IsExist before it.
 ============
 */
 stDir &stDir::Rmdir() {

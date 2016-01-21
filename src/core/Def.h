@@ -99,4 +99,15 @@ typedef double			f64;
 #define ST_ERR_LEVEL3_UPPER_BOUND	( ( stResult ) -10001 )
 #define ST_NOERR					( ( stResult ) 0	  )
 
+/*
+============
+st_sys_heap_memory_size
+
+Returns a size of heap memory points to.  Others will cause a error.
+============
+*/
+#define st_class_no_bin_cpy( class_name ) \
+public: \
+    class_name &operator=( const class_name& rhs ) = delete;
+
 #endif /* !__STLIB_DEF_H__ */

@@ -22,6 +22,8 @@ namespace stLibUtils {
 
 class stDir {
 
+    st_class_no_bin_cpy( stDir )
+
 private:
     stStrW              m_curPath;
 

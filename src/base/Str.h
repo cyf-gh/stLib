@@ -56,6 +56,8 @@ public:
 
 class stStrW {
 
+    st_class_no_bin_cpy( stStrW )
+
 protected:
 	wchar_t	*		    m_pdata;
 	bool				isWiderThanCurStr( const wchar_t *checkStr ) const;
@@ -80,6 +82,7 @@ public:
 	stStrW & 			Append( const wchar_t *text );
 	stStrW &			Append( const wchar_t *text, const un32 len );
 	stStrW &			SetStr( const wchar_t *text );
+	stStrW &            SetStr( const stStrW &text );
 	stStrW &		    Insert( un32 index, const wchar_t *text );
 	stStrW &		    Delete( un32 headIndex, const un32 counts = 0 );
 	stStrW &		    TrimFont(  const wchar_t key, const un32 times = 0 );
@@ -95,6 +98,8 @@ public:
 };
 
 class stStrA {
+
+    st_class_no_bin_cpy( stStrW )
 
 protected:
 	char *				m_pdata;
@@ -129,7 +134,7 @@ public:
     stStrA &		    Replace( un32 headIndex, const char *text );
 
 						stStrA();
-						stStrA( const stStrA &cpy );
+                        stStrA( const stStrA &cpy );
 						stStrA( const char *cpy );
 	virtual				~stStrA();
 };
@@ -145,15 +150,17 @@ public:
 class stConstStrW : public stStrW {
 private:
 						stConstStrW();
+						~stConstStrW();
 public:
-	explicit		    stConstStrW( wchar_t *kStr ) { m_pdata = kStr; }
+                        stConstStrW( wchar_t *kStr ) : stStrW( NULL ) { m_pdata = kStr; }
 };
 
 class stConstStrA : public stStrA {
 private:
 						stConstStrA();
+						stConstStrA();
 public:
-	explicit		    stConstStrA( char *kStr ) { m_pdata = kStr; }
+                        stConstStrA( char *kStr ) : stStrA( NULL ) { m_pdata = kStr; }
 };
 
 #endif /* !__STLIB_STRING_H__ */

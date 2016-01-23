@@ -7,7 +7,11 @@ Defines internal error codes.
 #define __STLIB_ERRCODE_H__
 
 namespace stLibErrCode {
-	
+
+enum GLOBAL {
+	ST_ERR_UNKNOWN = -25
+};
+
 /***********************************************************************
 
   IO Steam Errs.
@@ -44,6 +48,10 @@ enum DIRERRS {
 	ST_ERR_MKDIR 				= -21,
 	ST_ERR_RMDIR 				= -22,
 	ST_ERR_GETROOTDIR		    = -23,
+};
+
+enum MEMORYPOOLERRS {
+	ST_ERR_FREEANONBELONGNINGMEM = -24
 };
 
 } /* stLibErrCode */

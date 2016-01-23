@@ -37,13 +37,8 @@ static const f32 ST_PI = 3.141592654f;
 
 ***********************************************************************/
 
-static ST_INLINE f64 Max( f64 num1, f64 num2 ) {
-	return num1 > num2 ? num1 : num2;
-}
-
-static ST_INLINE f64 Min( f64 num1, f64 num2 ) {
-	return num1 > num2 ? num2 : num1;
-}
+#define ST_MAX( num1, num2 ) num1 > num2 ? num1 : num2
+#define ST_MIN( num1, num2 ) num1 > num2 ? num2 : num1
 
 static ST_INLINE bool IsEqualF( f64 num1, f64 num2 ) {
 	return fabs( num1 - num2 ) < 0.000001;
@@ -238,8 +233,8 @@ ST_INLINE stVec2 stRect::Center() const {
 
 ST_INLINE bool stRect::IsIntersect( const stRect &r, stRect *pout ) {
 	bool isIn = true;
-	stRect tmpRect( Max( b.x, r.b.x ), Min( a.y, r.a.y ),
-                    Min( b.x, r.b.x ), Max( a.y, r.a.y ) );
+	stRect tmpRect( ST_MAX( b.x, r.b.x ), ST_MIN( a.y, r.a.y ),
+                    ST_MIN( b.x, r.b.x ), ST_MAX( a.y, r.a.y ) );
 
 	*pout = ( isIn = tmpRect.IsLegal() ) ? tmpRect : *pout;
 	return isIn;

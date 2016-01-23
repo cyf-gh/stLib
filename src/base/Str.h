@@ -150,14 +150,12 @@ public:
 class stConstStrW : public stStrW {
 private:
 						stConstStrW();
-						~stConstStrW();
 public:
                         stConstStrW( wchar_t *kStr ) : stStrW( NULL ) { m_pdata = kStr; }
 };
 
 class stConstStrA : public stStrA {
 private:
-						stConstStrA();
 						stConstStrA();
 public:
                         stConstStrA( char *kStr ) : stStrA( NULL ) { m_pdata = kStr; }

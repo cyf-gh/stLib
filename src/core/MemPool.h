@@ -6,4 +6,93 @@ Provides memory pool features.
 #ifndef __STLIB_MEMPOOL_H__
 #define __STLIB_MEMPOOL_H__
 
-#endif /*! __STLIB_MEMPOOL_H__ */
+#include <vector>
+#include "Def.h"
+
+class stMemPiece {
+private:
+	void *      		m_phead;
+	void *				m_pend;
+	bool				m_available;
+	un64				m_size;
+
+public:
+	static stMemPiece   Merge( const stMemPiece &piece1, const stMemPiece &piece2 );
+	static stMemPiece   Split( stMemPiece &piece1, const un64 piece1Size );
+
+public:
+
+	void *       		Head() 		const { return m_phead; }
+	void * 		 		End()  		const { return m_pend; }
+    un64			    Size() 		const { return m_size; }
+	bool				Available() const { return m_available; };
+
+	stMemPiece &		Refund();
+	stMemPiece &		Take();
+	stMemPiece &		Clear();
+	stMemPiece &		Resize( const un64 newSize );
+
+						stMemPiece( void *phead, const un64 pieceSize );
+						stMemPiece( const stMemPiece &cpy );
+	virtual				~stMemPiece();
+};
+
+class stMemCake {
+
+	st_class_no_bin_cpy( stMemCake )
+
+protected:
+	typedef std::vector<stMemPiece> 		  Pieces;
+	typedef std::vector<stMemPiece>::iterator PieceIterator;
+	stMemPiece &		mergePieces( PieceIterator &headPiece, const un32 mergeCounts );
+	stMemPiece & 		splitPiece( PieceIterator &bigPiece, un64 neededSize );
+
+	Pieces				m_pieces;
+	const un64 			m_size;
+	void * 				m_phead;
+	void * 				m_pend;
+	void *				m_pcurSection;
+
+public:
+	un64 				GetRestMax();
+
+	void *				UseRefunded( const un64 size );
+	void *				Section( const un64 size );
+
+	bool				Refund( const void *phead );
+
+                        stMemCake( const un64 cakeSize );
+    virtual             ~stMemCake();
+};
+
+class stMemPool {
+
+	st_class_no_bin_cpy( stMemPool );
+
+private:
+						stMemPool( const un64 eachCakeSize );
+						stMemPool( const stMemPool &cpy );
+
+protected:
+	typedef std::vector<stMemCake> 			    Cakes;
+	typedef std::vector<stMemCake>::iterator 	CakeIterator;
+	typedef std::vector<void *>					Ptrs;
+	typedef std::vector<void *>::iterator 		PtrIterator;
+
+	const un64 			m_cakeSize;
+	Cakes				m_cakes;
+	Ptrs				m_bigMems;
+
+public:
+	static stMemPool &	Instance( const un64 eachCakeSize );
+
+	void *				Alloc( const un64 size );
+	void 				Free( void *pmem );
+};
+
+ST_INLINE stMemPool &stMemPool::Instance( const un64 eachCakeSize ) {
+	static stMemPool instance( eachCakeSize );
+	return instance;
+}
+
+#endif /* !__STLIB_MEMPOOL_H__ */

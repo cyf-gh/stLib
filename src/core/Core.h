@@ -46,8 +46,8 @@ public:
 };
 
 #ifdef _ST_DEBUG
-
-	static char					s_curLocDesc[ 2048 ];  // info description string.
+    #pragma message( "[ Info description activated ]" )
+	static char				s_curLocDesc[ 2048 ];  // info description string.
 
 	/*
 	============
@@ -64,7 +64,7 @@ public:
 			__FILE__, __FUNCTION__, __LINE__, __DATE__, __TIME__ )
 
 #else /* !_ST_DEBUG */
-
+    #pragma message( "[ Info description unactivated ]" )
 	static char					s_curLocDesc[ 1 ];  // info description string.
 
 	#define st_sys_record_cur_loc_desc();

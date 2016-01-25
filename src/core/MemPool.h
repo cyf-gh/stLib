@@ -6,6 +6,8 @@ Provides memory pool features.
 #ifndef __STLIB_MEMPOOL_H__
 #define __STLIB_MEMPOOL_H__
 
+#pragma message( "Target ERROR:[ stLib Memory pool has very low performance, do not use it any more! ]" )
+
 #include <vector>
 #include "Def.h"
 
@@ -27,7 +29,7 @@ private:
 public:
 	static stMemPiece   Merge( const stMemPiece &piece1, const stMemPiece &piece2 );
 	static stMemPiece   Split( stMemPiece &piece1, const un64 piece1Size );
-
+	
 public:
 	void *       		Head() 		const { return m_phead; }
 	void * 		 		End()  		const { return m_pend; }

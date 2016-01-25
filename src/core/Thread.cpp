@@ -14,8 +14,8 @@ stThread::stThread
 ============
 */
 stThread::stThread( bool pauseThread  ) {
-	m_hThread = CreateThread( 0, 0, &execute, ( void* )this, pauseThread ? CREATE_SUSPENDED : 0, &m_threadID );
-	if ( m_hThread == NULL ) {
+	m_thread = CreateThread( 0, 0, &execute, ( void* )this, pauseThread ? CREATE_SUSPENDED : 0, &m_threadID );
+	if ( m_thread == NULL ) {
 		throw "CreateThread Failed.";
 	}
 }
@@ -108,7 +108,7 @@ stCriticalSection::stCriticalSection
 ============
 */
 stCriticalSection::stCriticalSection() {
-	InitializeCriticalSection( &m_Section );
+	InitializeCriticalSection( &m_section );
 }
 
 /*
@@ -117,7 +117,7 @@ stCriticalSection::~stCriticalSection
 ============
 */
 stCriticalSection::~stCriticalSection() {
-	DeleteCriticalSection( &m_Section );
+	DeleteCriticalSection( &m_section );
 }
 
 /*
@@ -126,7 +126,16 @@ stCriticalSection::TryLock
 ============
 */
 bool stCriticalSection::TryLock() {
-	return TryEnterCriticalSection( &m_Section ) != FALSE;
+	return TryEnterCriticalSection( &m_section ) != FALSE;
+}
+
+/*
+============
+stCriticalSection::UnLock
+============
+*/
+void stCriticalSection::Unlock() {
+	LeaveCriticalSection( &m_section );
 }
 
 /*
@@ -135,14 +144,5 @@ stCriticalSection::Lock
 ============
 */
 void stCriticalSection::Lock() {
-	EnterCriticalSection( &m_Section );
-}
-
-/*
-============
-stCriticalSection::UnLock
-============
-*/
-void stCriticalSection::UnLock() {
-	LeaveCriticalSection( &m_Section );
+	EnterCriticalSection( &m_section );
 }

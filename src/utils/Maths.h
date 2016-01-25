@@ -215,7 +215,7 @@ ST_INLINE void stRect::Set( stRect *rect, const RECT &r ) {
 }
 
 ST_INLINE RECT stRect::Get( const stRect &rect ) {
-	return RECT{ rect.b.x, rect.a.y, rect.a.x, rect.b.y };
+	return RECT{ ( long )rect.b.x, ( long )rect.a.y, ( long )rect.a.x, ( long )rect.b.y };
 }
 
 ST_INLINE bool stRect::IsLegal() const {

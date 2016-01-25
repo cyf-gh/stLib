@@ -52,8 +52,8 @@ public:
 ***********************************************************************/
 
 #ifdef _ST_DEBUG
-    #pragma                     message( "Target switch:[ ERROR INFO ] : ON" )
-	static char				s_curLocDesc[ 2048 ];  // info description string.
+    #pragma message( "Target Switch:[ stLib DETAILED INFO ] : ON" )
+	static char					s_curLocDesc[ 2048 ];  // info description string.
 
 	/*
 	============
@@ -63,21 +63,19 @@ public:
 	============
 	*/
 	#define st_sys_record_cur_loc_desc() \
-		st_zero_memory( stLibCore::s_strCurLocDesc, 1 ); \
+		st_zero_memory( stLibCore::s_curLocDesc, 1 ); \
 		sprintf( \
-			stLibCore::s_strCurLocDesc, \
+			stLibCore::s_curLocDesc, \
 			"FILE: %s\nFUNCTION NAME: %s\nLINE: %d\nDATE: %s\nTIME: %s\n", \
 			__FILE__, __FUNCTION__, __LINE__, __DATE__, __TIME__ )
 
 #else /* !_ST_DEBUG */
-    #pragma                     message( "Target switch:[ ERROR INFO ] : OFF" )
+    #pragma message( "Target Switch:[ ERROR INFO ] : OFF" )
 	static char					s_curLocDesc[ 1 ];  // info description string.
 
 	#define st_sys_record_cur_loc_desc();
 
 #endif /* !_ST_RELEASE */
-
-} /* stLibCore */
 
 /*
 ============
@@ -136,6 +134,8 @@ Returns a size of heap memory points to.  Others will cause a error.
 #define st_sys_heap_memory_size( memory ) \
 	stLibCore::stCore::HeapSize( memory )
 
+} /* stLibCore */
+
 /***********************************************************************
 
   Memory pool
@@ -145,7 +145,7 @@ Returns a size of heap memory points to.  Others will cause a error.
 #ifdef         ST_SWITCH_MEMORYPOOL_ON
 
 #include "MemPool.h"
-#pragma                 message( "Target switch:[ MEMORY POOL ] : ON" )
+#pragma message( "Target Switch:[ MEMORY POOL ] : ON" )
 
 template<typename T>
 ST_INLINE T *st_new( un64 objNum ) {
@@ -158,7 +158,7 @@ ST_INLINE void st_delete( T *pt ) {
 }
 
 #elif defined( ST_SWITCH_MEMORYPOOL_OFF )
-#pragma                 message( "Target switch:[ MEMORY POOL ] : OFF" )
+#pragma message( "Target Switch:[ MEMORY POOL ] : OFF" )
 
 template<typename T>
 ST_INLINE T *st_new( un64 objNum ) {

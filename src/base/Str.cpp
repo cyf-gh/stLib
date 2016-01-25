@@ -1,5 +1,5 @@
 #include "Str.h"
-#include "..\core\Core.h"
+#include "../core/Core.h"
 
 using namespace stLibEnum;
 
@@ -35,7 +35,7 @@ stStrMem::NewAndCpyW
 ============
 */
 wchar_t *stStrMem::NewAndCpyW( wchar_t **ppalloc, const wchar_t *cpySrc ) {
-    *ppalloc = new wchar_t[ wcslen( *ppalloc ) + 1 ];
+    *ppalloc = st_new<wchar_t>( wcslen( *ppalloc ) + 1 );
 
     if ( NULL == *ppalloc ) {
         return NULL;
@@ -56,14 +56,14 @@ stStrMem::NewW
 ============
 */
 wchar_t *stStrMem::NewW( wchar_t **ppalloc ) {
-    *ppalloc = new wchar_t[ 50 ];
+    *ppalloc = st_new<wchar_t>( 50 );
 
     ZeroMemW( ppalloc );
     return *ppalloc;
 }
 
 wchar_t *stStrMem::NewW() {
-    wchar_t *alloc = new wchar_t[ 50 ];
+    wchar_t *alloc = st_new<wchar_t>( 50 );
 
     if ( NULL == alloc )
         return NULL;
@@ -93,7 +93,7 @@ Eliminates extra heap space of string.
 wchar_t *stStrMem::FitW( wchar_t **ppsrc ) {
     wchar_t *src = *ppsrc;
 
-    *ppsrc = new wchar_t[ wcslen( *ppsrc ) + 1 ];
+    *ppsrc = st_new<wchar_t>( wcslen( *ppsrc ) + 1 );
     wcscpy( *ppsrc, src );
     SafeDelW( &src );
     return *ppsrc;
@@ -118,7 +118,7 @@ stStrMem::ExtendW
 wchar_t *stStrMem::ExtendW( wchar_t **ppsrc, un32 newSize ) {
     wchar_t *src = *ppsrc;
 
-    *ppsrc = new wchar_t[ newSize ];
+    *ppsrc = st_new<wchar_t>( newSize );
     ZeroMemW( ppsrc );
     wcscpy( *ppsrc, src );
     SafeDelW( &src );
@@ -146,7 +146,7 @@ stStrMem::NewAndCpyA
 ============
 */
 char *stStrMem::NewAndCpyA( char **ppalloc, const char *cpySrc ) {
-    *ppalloc = new char[ strlen( cpySrc ) + 1 ];
+    *ppalloc = st_new<char>( strlen( cpySrc ) + 1 );
 
     if ( NULL == *ppalloc )
         return NULL;
@@ -166,14 +166,14 @@ stStrMem::NewA
 ============
 */
 char *stStrMem::NewA( char **ppalloc ) {
-    *ppalloc = new char[ 50 ];
+    *ppalloc = st_new<char>( 50 );
 
     ZeroMemA( ppalloc );
     return *ppalloc;
 }
 
 char *stStrMem::NewA() {
-    char *alloc = new char[ 50 ];
+    char *alloc = st_new<char>( 50 );
 
     if ( NULL == alloc )
         return NULL;
@@ -203,7 +203,7 @@ Eliminates extra heap space of string.
 char *stStrMem::FitA( char **ppsrc ) {
     char *src = *ppsrc;
 
-    *ppsrc = new char[ strlen( *ppsrc ) + 1 ];
+    *ppsrc = st_new<char>( strlen( *ppsrc ) + 1 );
     strcpy( *ppsrc, src );
     SafeDelA( &src );
     return *ppsrc;
@@ -223,7 +223,7 @@ stStrMem::ExtendA
 char *stStrMem::ExtendA( char **ppsrc, un32 newSize ) {
     char *src = *ppsrc;
 
-    *ppsrc = new char[ newSize ];
+    *ppsrc = st_new<char>( newSize );
     ZeroMemA( ppsrc );
     strcpy( *ppsrc, src );
     SafeDelA( &src );
@@ -242,7 +242,7 @@ wchar_t *stStrMem::AToW( wchar_t **ppsrc, const char *targetSrc, const n32 codeP
     const un32 newSize = MultiByteToWideChar( codePage, 0, targetSrc, -1, NULL, 0 );
 
     SafeDelW( ppsrc );		// prevent memory leak
-    *ppsrc = new wchar_t[ newSize ];
+    *ppsrc = st_new<wchar_t>( newSize );
     MultiByteToWideChar( codePage, 0, targetSrc, -1, *ppsrc, newSize );
     return *ppsrc;
 }
@@ -258,7 +258,7 @@ char *stStrMem::WToA( char **ppsrc, const wchar_t *targetSrc, const n32 codePage
     const un32 newSize = WideCharToMultiByte( codePage, NULL, targetSrc, -1, NULL, 0, NULL, false );
 
     SafeDelA( ppsrc ); // prevent memory leak
-    *ppsrc = new char[ newSize ];
+    *ppsrc = st_new<char>( newSize );
     WideCharToMultiByte( codePage, NULL, targetSrc, -1, *ppsrc, newSize, NULL, false );
     return *ppsrc;
 }
@@ -568,7 +568,7 @@ stStrW::Insert
 ============
 */
 stStrW &stStrW::Insert( un32 index, const wchar_t *text ) {
-    static wchar_t *store			 = new wchar_t[ wcslen( text ) ];
+    static wchar_t *store			 = st_new<wchar_t>( wcslen( text ) );
     wchar_t		   *behindInsertPos  = m_pdata + index;
 
     m_mem.tryExtendMemW( &m_pdata, text );
@@ -907,7 +907,7 @@ stStrA::Insert
 ============
 */
 stStrA &stStrA::Insert( un32 index, const char *text ) {
-    static char    *store            = new char[ strlen( text ) ];
+    static char    *store            = st_new<char>( strlen( text ) );
     char		   *behindInsertPos  = m_pdata + index;
 
     m_mem.tryExtendMemA( &m_pdata, text );

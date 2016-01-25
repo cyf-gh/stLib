@@ -45,8 +45,14 @@ public:
 	static stStrW				SysLastErrDesc();
 };
 
+/***********************************************************************
+
+  Common
+
+***********************************************************************/
+
 #ifdef _ST_DEBUG
-    #pragma message( "[ Info description activated ]" )
+    #pragma                     message( "Target switch:[ ERROR INFO ] : ON" )
 	static char				s_curLocDesc[ 2048 ];  // info description string.
 
 	/*
@@ -64,12 +70,14 @@ public:
 			__FILE__, __FUNCTION__, __LINE__, __DATE__, __TIME__ )
 
 #else /* !_ST_DEBUG */
-    #pragma message( "[ Info description unactivated ]" )
+    #pragma                     message( "Target switch:[ ERROR INFO ] : OFF" )
 	static char					s_curLocDesc[ 1 ];  // info description string.
 
 	#define st_sys_record_cur_loc_desc();
 
 #endif /* !_ST_RELEASE */
+
+} /* stLibCore */
 
 /*
 ============
@@ -128,6 +136,46 @@ Returns a size of heap memory points to.  Others will cause a error.
 #define st_sys_heap_memory_size( memory ) \
 	stLibCore::stCore::HeapSize( memory )
 
-} /* stLibCore */
+/***********************************************************************
+
+  Memory pool
+
+***********************************************************************/
+
+#ifdef         ST_SWITCH_MEMORYPOOL_ON
+
+#include "MemPool.h"
+#pragma                 message( "Target switch:[ MEMORY POOL ] : ON" )
+
+template<typename T>
+ST_INLINE T *st_new( un64 objNum ) {
+    return ( T* )( stMemPool::Instance().Alloc( objNum * sizeof( T ) ) );
+}
+
+template<typename T>
+ST_INLINE void st_delete( T *pt ) {
+    stMemPool::Instance().Free( *pt );
+}
+
+#elif defined( ST_SWITCH_MEMORYPOOL_OFF )
+#pragma                 message( "Target switch:[ MEMORY POOL ] : OFF" )
+
+template<typename T>
+ST_INLINE T *st_new( un64 objNum ) {
+    return new T[ objNum ];
+}
+
+template<typename T>
+ST_INLINE void st_delete( T *pt ) {
+    st_safe_del( *pt );
+}
+
+template<typename T>
+ST_INLINE void st_delete_arr( T *pt ) {
+    st_safe_del_arr( *pt );
+}
+           /* !ST_SWITCH_MEMORYPOOL_OFF */
+
+#endif     /* !ST_SWITCH_MEMORYPOOL_ON */
 
 #endif /* !__STLIB_CORE_H__ */

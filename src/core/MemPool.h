@@ -9,6 +9,14 @@ Provides memory pool features.
 #include <vector>
 #include "Def.h"
 
+#define                 ST_MEMPOOL_DEFAULT_CAKESIZE 1024
+
+/***********************************************************************
+
+    stMemPiece
+
+***********************************************************************/
+
 class stMemPiece {
 private:
 	void *      		m_phead;
@@ -21,7 +29,6 @@ public:
 	static stMemPiece   Split( stMemPiece &piece1, const un64 piece1Size );
 
 public:
-
 	void *       		Head() 		const { return m_phead; }
 	void * 		 		End()  		const { return m_pend; }
     un64			    Size() 		const { return m_size; }
@@ -37,15 +44,21 @@ public:
 	virtual				~stMemPiece();
 };
 
+/***********************************************************************
+
+    stMemCake
+
+***********************************************************************/
+
 class stMemCake {
 
 	st_class_no_bin_cpy( stMemCake )
 
 protected:
 	typedef std::vector<stMemPiece> 		  Pieces;
-	typedef std::vector<stMemPiece>::iterator PieceIterator;
-	stMemPiece &		mergePieces( PieceIterator &headPiece, const un32 mergeCounts );
-	stMemPiece & 		splitPiece( PieceIterator &bigPiece, un64 neededSize );
+
+	stMemPiece &		mergePieces( const nbus srcIndex, const un32 counts );
+	stMemPiece & 		splitPiece( const nbus srcIndex, const un64 prevSize );
 
 	Pieces				m_pieces;
 	const un64 			m_size;
@@ -56,7 +69,7 @@ protected:
 public:
 	un64 				GetRestMax();
 
-	void *				UseRefunded( const un64 size );
+	void *				UseRefunded( const un64 neededSize );
 	void *				Section( const un64 size );
 
 	bool				Refund( const void *phead );
@@ -64,6 +77,12 @@ public:
                         stMemCake( const un64 cakeSize );
     virtual             ~stMemCake();
 };
+
+/***********************************************************************
+
+    stMemPool
+
+***********************************************************************/
 
 class stMemPool {
 
@@ -74,10 +93,8 @@ private:
 						stMemPool( const stMemPool &cpy );
 
 protected:
-	typedef std::vector<stMemCake> 			    Cakes;
-	typedef std::vector<stMemCake>::iterator 	CakeIterator;
+	typedef std::vector<stMemCake> 		        Cakes;
 	typedef std::vector<void *>					Ptrs;
-	typedef std::vector<void *>::iterator 		PtrIterator;
 
 	const un64 			m_cakeSize;
 	Cakes				m_cakes;
@@ -90,7 +107,7 @@ public:
 	void 				Free( void *pmem );
 };
 
-ST_INLINE stMemPool &stMemPool::Instance( const un64 eachCakeSize ) {
+ST_INLINE stMemPool &stMemPool::Instance( const un64 eachCakeSize = ST_MEMPOOL_DEFAULT_CAKESIZE ) {
 	static stMemPool instance( eachCakeSize );
 	return instance;
 }

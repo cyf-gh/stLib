@@ -44,6 +44,7 @@
 		<Unit filename="src/core/ErrCode.h" />
 		<Unit filename="src/core/MemPool.cpp" />
 		<Unit filename="src/core/MemPool.h" />
+		<Unit filename="src/core/Thread.h" />
 		<Unit filename="src/utils/Converter.h" />
 		<Unit filename="src/utils/Dir.cpp" />
 		<Unit filename="src/utils/Dir.h" />

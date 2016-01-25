@@ -145,21 +145,21 @@ stMemCake::stMemCake( const un64 cakeSize )
 stMemCake::~stMemCake
 ============
 */
-stMemCake::~stMemCake() {
-	free( m_phead );
-}
+stMemCake::~stMemCake() { }
 
 /*
 ============
 stMemCake::mergePieces
 ============
 */
-stMemPiece &stMemCake::mergePieces( PieceIterator &headPiece, const un32 mergeCounts ) {
-	for ( un32 i = 0; i < mergeCounts - 1; ++i ) {
-		headPiece->Resize( stMemPiece::Merge( *headPiece, *( headPiece + 1 ) ).Size() );
-		m_pieces.erase( headPiece + 1 );
+stMemPiece &stMemCake::mergePieces( const nbus srcIndex, const un32 counts ) {
+	stMemPiece *phead = &m_pieces[srcIndex];
+
+	for ( un32 i = 0; i < counts - 1; ++i ) {
+		phead->Resize( stMemPiece::Merge( *phead, m_pieces[srcIndex + i + 1] ).Size() );
+		m_pieces.erase( m_pieces.begin() + srcIndex + i + 1  );
 	}
-	return *headPiece;
+	return *phead;
 }
 
 /*
@@ -167,11 +167,11 @@ stMemPiece &stMemCake::mergePieces( PieceIterator &headPiece, const un32 mergeCo
 stMemCake::splitPiece
 ============
 */
-stMemPiece &stMemCake::splitPiece( PieceIterator &bigPiece, un64 neededSize ) {
-	stMemPiece fontPiece( stMemPiece::Split( *bigPiece, neededSize ) );
+stMemPiece &stMemCake::splitPiece( const nbus srcIndex, const un64 prevSize ) {
+	stMemPiece fontPiece( stMemPiece::Split( m_pieces[srcIndex], prevSize ) );
 
-	m_pieces.insert( bigPiece + 1, fontPiece );
-	return *bigPiece;
+	m_pieces.insert( m_pieces.begin() + srcIndex, fontPiece );
+	return m_pieces[srcIndex + 1];
 }
 
 /*
@@ -180,14 +180,14 @@ stMemCake::GetRestMax
 ============
 */
 un64 stMemCake::GetRestMax() {
-	un64 refundedMax = 0;
-	un64 piecesSize  = 0;
+	un64 refundedMax   = 0;
+	un64 piecesSize    = 0;
 
-	for ( PieceIterator piece = m_pieces.begin(); piece != m_pieces.end(); ++piece ) {
-		if ( ! piece->Available() ) {
-			refundedMax = ST_MAX( piece->Size(), refundedMax );
+	for ( nbus i = 0; i < m_pieces.size(); ++i ) {
+		if ( ! m_pieces[i].Available() ) {
+			refundedMax = ST_MAX( m_pieces[i].Size(), refundedMax );
 		}
-		piecesSize += piece->Size();
+		piecesSize += m_pieces[i].Size();
 	}
 	return ST_MAX( ( m_size - piecesSize ), refundedMax );
 }
@@ -198,34 +198,21 @@ stMemCake::UseRefunded
 ============
 */
 void *stMemCake::UseRefunded( const un64 neededSize ) {
-	un64 solidAvailSize = 0;
-	un32 solidTimes		= 0;
+    stMemPiece *piece   = NULL;
 
-	for ( PieceIterator piece = m_pieces.begin(); piece != m_pieces.end(); ++piece ) {
+	for ( nbus i = 0; i < m_pieces.size(); ++i ) {
+		piece = &m_pieces[i];
+
 		if ( piece->Available() ) {
 			if ( neededSize <= piece->Size() ) {
 				if ( neededSize < ( piece->Size() / 2 ) ) {
 					// current piece is too big
-					return splitPiece( piece, neededSize ).Take().Head();
+					return splitPiece( i, neededSize ).Take().Head();
 				} else {
 					return piece->Take().Head();
 				}
-			} else {
-				// calculate solid pieces
-				solidAvailSize += piece->Size();
-				++solidTimes;
 			}
-
-			if ( neededSize <= solidAvailSize ) {
-                PieceIterator mergeHead = piece - solidTimes + 1;
-				// merge fractional pieces
-				return mergePieces( mergeHead, solidTimes ).Take().Head();
-			}
-		} else {
-			// solid pieces interrupted
-			solidAvailSize = 0;
-			solidTimes = 0;
-		}
+        }
 	}
 	return NULL;
 }
@@ -242,8 +229,8 @@ void *stMemCake::Section( const un64 size ) {
 		stMemPiece piece( m_pcurSection, size );
 
 		m_pcurSection = pafterSection;
-		m_pieces.push_back( piece );
-		return piece.Take().Head();
+		m_pieces.push_back( piece.Take() );
+		return piece.Head();
 	}
 	return NULL;
 }
@@ -254,9 +241,9 @@ stMemCake::Refund
 ============
 */
 bool stMemCake::Refund( const void *phead ) {
-	for ( PieceIterator piece = m_pieces.begin(); piece != m_pieces.end(); ++piece ) {
-		if ( piece->Head() == phead ) {
-			piece->Refund().Clear();
+	for ( nbus i = 0; i < m_pieces.size(); ++i ) {
+		if ( m_pieces[i].Head() == phead ) {
+			m_pieces[i].Refund().Clear();
 			return true;
 		}
 	}
@@ -277,8 +264,8 @@ stMemPool::stMemPool
 ============
 */
 stMemPool::stMemPool( const un64 eachCakeSize ) : m_cakeSize( eachCakeSize ) {
-	stMemCake *pcake = new stMemCake( m_cakeSize );
-	m_cakes.push_back( *pcake );
+	stMemCake cake( m_cakeSize );
+	m_cakes.push_back( cake );
 }
 
 /*
@@ -287,22 +274,29 @@ stMemPool::Alloc
 ============
 */
 void *stMemPool::Alloc( const un64 size ) {
+	// big memory
 	if ( size >= m_cakeSize ) {
 		void * ptr = malloc( size );
 		m_bigMems.push_back( ptr );
 		return ptr;
 	}
-	for ( CakeIterator cake = m_cakes.begin(); cake != m_cakes.end(); ++cake ) {
-		if ( size > cake->GetRestMax() ) {
-			// current cakes all do not have enough space
-			stMemCake *pcake = new stMemCake( m_cakeSize );
-			m_cakes.push_back( *pcake );
-			continue;
+	// last cake does not have enough space
+    if ( size > m_cakes[m_cakes.size() - 1].GetRestMax() ) {
+        stMemCake cake( m_cakeSize );
+        m_cakes.push_back( cake );
+    }
+    void *pmem = m_cakes[m_cakes.size() - 1].Section( size - 1 );
+    if ( pmem ) {
+        return pmem;
+    }
+    // try use previous cakes' refunded space
+	for ( nbus i = 0; i < m_cakes.size() - 1; ++i ) {
+		void * pmem = m_cakes[i].UseRefunded( size );
+		if ( pmem != NULL ) {
+            return pmem;
 		}
-		void * pmem = cake->UseRefunded( size );
-		return ( pmem != NULL ) ? pmem : cake->Section( size );
 	}
-	st_core_return_with_var( ST_ERR_UNKNOWN, NULL );
+    st_core_return_with_var( ST_ERR_UNKNOWN, NULL );
 }
 
 /*
@@ -311,20 +305,18 @@ stMemPool::Free
 ============
 */
 void stMemPool::Free( void *pmem ) {
-	for ( PtrIterator p = m_bigMems.begin(); p != m_bigMems.end(); ++p ) {
-		if ( *p == pmem ) {
+    for ( nbus i = 0; i < m_bigMems.size(); ++i ) {
+		if ( m_bigMems[i] == pmem ) {
 			free( pmem );
-			m_bigMems.erase( p );
+			m_bigMems.erase( m_bigMems.begin() + i );
 			return;
 		}
 	}
-	for ( CakeIterator cake = m_cakes.begin(); cake != m_cakes.end(); ++cake ) {
-		if( false == cake->Refund( pmem ) ) {
-			continue;
-		} else {
+	for ( nbus i = 0; i < m_cakes.size(); ++i ) {
+		if( true == m_cakes[i].Refund( pmem ) ) {
 			return;
 		}
-	}
+    }
 	st_core_return( ST_ERR_FREEANONBELONGNINGMEM );
 }
 

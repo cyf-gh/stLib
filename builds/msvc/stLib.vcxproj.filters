@@ -1,28 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="..\..\src\Enum.h" />
-    <ClInclude Include="..\..\src\utils\Converter.h" />
-    <ClInclude Include="..\..\src\utils\Dir.h" />
-    <ClInclude Include="..\..\src\utils\Maths.h" />
-    <ClInclude Include="..\..\src\utils\Random.h" />
-    <ClInclude Include="..\..\src\utils\Stopwatch.h" />
-    <ClInclude Include="..\..\src\core\Core.h" />
-    <ClInclude Include="..\..\src\core\Def.h" />
-    <ClInclude Include="..\..\src\core\ErrCode.h" />
-    <ClInclude Include="..\..\src\core\MemPool.h" />
-    <ClInclude Include="..\..\src\core\Thread.h" />
-    <ClInclude Include="..\..\src\base\Str.h" />
-    <ClInclude Include="..\..\src\base\Stream.h" />
+    <ClCompile Include="..\..\src\Core.cpp" />
+    <ClCompile Include="..\..\src\Dir.cpp" />
+    <ClCompile Include="..\..\src\MemPool.cpp" />
+    <ClCompile Include="..\..\src\Random.cpp" />
+    <ClCompile Include="..\..\src\Stopwatch.cpp" />
+    <ClCompile Include="..\..\src\Str.cpp" />
+    <ClCompile Include="..\..\src\Stream.cpp" />
+    <ClCompile Include="..\..\src\Thread.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\utils\Dir.cpp" />
-    <ClCompile Include="..\..\src\utils\Random.cpp" />
-    <ClCompile Include="..\..\src\utils\Stopwatch.cpp" />
-    <ClCompile Include="..\..\src\core\Core.cpp" />
-    <ClCompile Include="..\..\src\core\MemPool.cpp" />
-    <ClCompile Include="..\..\src\core\Thread.cpp" />
-    <ClCompile Include="..\..\src\base\Str.cpp" />
-    <ClCompile Include="..\..\src\base\Stream.cpp" />
+    <ClInclude Include="..\..\include\Enum.h" />
+    <ClInclude Include="..\..\include\core\Core.h" />
+    <ClInclude Include="..\..\include\core\Def.h" />
+    <ClInclude Include="..\..\include\core\ErrCode.h" />
+    <ClInclude Include="..\..\include\core\MemPool.h" />
+    <ClInclude Include="..\..\include\core\Thread.h" />
+    <ClInclude Include="..\..\include\base\Str.h" />
+    <ClInclude Include="..\..\include\base\Stream.h" />
+    <ClInclude Include="..\..\include\utils\Converter.h" />
+    <ClInclude Include="..\..\include\utils\Dir.h" />
+    <ClInclude Include="..\..\include\utils\Maths.h" />
+    <ClInclude Include="..\..\include\utils\Random.h" />
+    <ClInclude Include="..\..\include\utils\Stopwatch.h" />
   </ItemGroup>
 </Project>

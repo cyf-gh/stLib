@@ -26,7 +26,7 @@ protected:
 	virtual un32 		ThreadJob() = 0;
 
 public:
-	HANDLE 				GetHandle();
+	HANDLE 				Handle();
 	bool 				Resume();
 	bool 				Suspend();
 	bool 				Wait( n32 timeLimited = -1 );

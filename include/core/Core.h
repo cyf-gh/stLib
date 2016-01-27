@@ -97,7 +97,8 @@ st_core_return
 
 #define st_core_return( function_return_code )  \
 	st_sys_record_cur_loc_desc(); \
-	return stLibCore::stCore::CoreReturn( function_return_code )
+	stLibCore::stCore::CoreReturn( function_return_code ); \
+	return
 
 /*
 ============

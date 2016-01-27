@@ -1,4 +1,4 @@
-#include "Thread.h"
+#include "..\include\core\Thread.h"
 
 /*
 ==============================================================
@@ -40,10 +40,10 @@ DWORD WINAPI stThread::execute( void *p ) {
 
 /*
 ============
-stThread::GetHandle
+stThread::Handle
 ============
 */
-HANDLE stThread::GetHandle() {
+HANDLE stThread::Handle() {
 	return m_thread;
 }
 

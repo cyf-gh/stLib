@@ -24,24 +24,24 @@ class stStream {
     st_class_no_bin_cpy( stStream )
 
 protected:
-	stLibEnum::FILEOPENMODE m_mode;		// file opening mode
-	FILE *                  m_pfile;	// file handle
-	un32					m_size;		// bit unit size
-	bool					m_isOpen;	// if there has been a file handle
+	stLibEnum::FILEOPENMODE m_mode;		
+	FILE *                  m_pfile;	
+	un32					m_size;		
+	bool					m_isOpen;	
 
 public:
-	void					Open( const wchar_t *path, stLibEnum::FILEOPENMODE mode );
+	void					Open( const stStrW &path, stLibEnum::FILEOPENMODE mode );
 	void					Close();
-	void					Flush();
 	void					Move( const n32 pos, stLibEnum::FILEPOSITIONORG org );
 	void					MoveHead();
-    void                    Save( const wchar_t *newPath );
-	un32					GetSize()		const { return m_size; }
-	un32					GetPos()		const { return ftell( m_pfile ); }
-	bool					IsOpen()		const { return ( bool )m_isOpen; }
-	bool					IsEOF()			const { return ( bool )feof( m_pfile ); }
-	void *					GetHandle()		const { return m_pfile; }
-	stLibEnum::FILEOPENMODE GetMode()		const { return m_mode; }
+    void                    SaveAs( const stStrW &newPath );
+	void                    Save();
+	un32					Size()		const { return m_size; }
+	un32					Pos()		const { return ftell( m_pfile ); }
+	bool					IsOpen()	const { return ( bool )m_isOpen; }
+	bool					IsEOF()		const { return ( bool )feof( m_pfile ); }
+	void *					Handle()	const { return m_pfile; }
+	stLibEnum::FILEOPENMODE Mode()		const { return m_mode; }
 
 							stStream();
 	virtual					~stStream();
@@ -58,19 +58,19 @@ class stStreamHelper {
     st_class_no_bin_cpy( stStreamHelper )
 
 protected:
-	stStream				*m_pParent;
+	stStream				*m_pparent;
 
 							stStreamHelper( const stStreamHelper & );
 
-	FILE *					hfile()				{ return ( FILE * )m_pParent->GetHandle(); }
-	stStream *				hstream()			{ return m_pParent ; }
+	FILE *					hfile()			  { return ( FILE * )m_pparent->Handle(); }
+	stStream *				hstream()		  { return m_pparent; }
 
 public:
-	void					SetStream( stStream *parent )  { m_pParent = parent; }
-	void					DeleteStream()			       { st_safe_del( m_pParent ); }
-	stStream *				GetStream()				 const { return m_pParent; }
+	void					SetStream( stStream *parent )  { m_pparent = parent; }
+	void					DeleteStream()			       { st_safe_del( m_pparent ); }
+	stStream *				GetStream()				 const { return m_pparent; }
 
-							stStreamHelper( stStream *parent );
+							stStreamHelper( stStream *pparent );
 							stStreamHelper();
     virtual					~stStreamHelper();
 };
@@ -84,7 +84,7 @@ public:
 	void					WriteBytes( const un32 counts, byte8 *data );
 
 							stStreamBinary();
-							stStreamBinary( stStream *parent );
+							stStreamBinary( stStream *pparent );
 	virtual					~stStreamBinary();
 };
 
@@ -96,7 +96,7 @@ public:
 	void					ReadText( const un32 counts, stStrW *ppstr );
 	void					WriteText( const un32 counts, const stStrW &pstr );
 
-							stStreamText( stStream *parent );
+							stStreamText( stStream *pparent );
 							stStreamText();
 	virtual					~stStreamText();
 };

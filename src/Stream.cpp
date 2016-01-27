@@ -1,7 +1,7 @@
-﻿#include "..\core\Core.h"
-#include "..\core\ErrCode.h"
-#include "Stream.h"
-#include "..\base\Str.h"
+﻿#include "..\include\core\Core.h"
+#include "..\include\core\ErrCode.h"
+#include "..\include\base\Stream.h"
+#include "..\include\base\Str.h"
 
 using namespace stLibCore;
 using namespace stLibErrCode;
@@ -30,9 +30,7 @@ stStream::~stStream
 ============
 */
 stStream::~stStream() {
-	if ( m_isOpen ) {
-		fclose( m_pfile );
-	}
+	Close();
 }
 
 /*
@@ -40,49 +38,49 @@ stStream::~stStream() {
 stStream::Open
 ============
 */
-void stStream::Open( const wchar_t *path, FILEOPENMODE mode ) {
+void stStream::Open( const stStrW &path, FILEOPENMODE mode ) {
 	if ( m_pfile ) {
 		st_core_return( ST_ERR_OPENEDFILEHANDLE );
 	}
 	switch ( mode ) {
 		// Unicode mode
 		case ST_WRITE_UNICODE :
-			m_pfile = _wfopen( path, L"wt+,ccs=UNICODE" );
+			m_pfile = _wfopen( path.Data(), L"rt+,ccs=UNICODE" );
 			break;
 		case ST_READ_UNICODE :
-			m_pfile = _wfopen( path, L"rt+,ccs=UNICODE" );
+			m_pfile = _wfopen( path.Data(), L"rt,ccs=UNICODE" );
 			break;
 		case ST_CREATE_UNICODE :
-			m_pfile = _wfopen( path, L"wt+,ccs=UNICODE" );
+			m_pfile = _wfopen( path.Data(), L"wt+,ccs=UNICODE" );
 			break;
 		// UTF-8
 		case ST_WRITE_UTF8 :
-			m_pfile = _wfopen( path, L"wt+,ccs=UTF-8" );
+			m_pfile = _wfopen( path.Data(), L"rt+,ccs=UTF-8" );
 			break;
 		case ST_READ_UTF8 :
-			m_pfile = _wfopen( path, L"rt+,ccs=UTF-8" );
+			m_pfile = _wfopen( path.Data(), L"rt,ccs=UTF-8" );
 			break;
 		case ST_CREATE_UTF8 :
-			m_pfile = _wfopen( path, L"wt+,ccs=UTF-8" );
+			m_pfile = _wfopen( path.Data(), L"wt+,ccs=UTF-8" );
 		// ASCI
 		case ST_WRITE_ASCI :
-			m_pfile = _wfopen( path, L"rt+" );
+			m_pfile = _wfopen( path.Data(), L"rt+" );
 			break;
 		case ST_READ_ASCI :
-			m_pfile = _wfopen( path, L"rt" );
+			m_pfile = _wfopen( path.Data(), L"rt" );
 			break;
 		case ST_CREATE_ASCI :
-			m_pfile = _wfopen( path, L"wt" );
+			m_pfile = _wfopen( path.Data(), L"wt" );
 			break;
 		// Binary
 		case ST_WRITE_BINARY :
-			m_pfile = _wfopen( path, L"rtb+" );
+			m_pfile = _wfopen( path.Data(), L"rb+" );
 			break;
 		case ST_READ_BINARY :
-			m_pfile = _wfopen( path, L"rb" );
+			m_pfile = _wfopen( path.Data(), L"rb" );
 			break;
 		case ST_CREATE_BINARY :
-			m_pfile = _wfopen( path, L"wb" );
+			m_pfile = _wfopen( path.Data(), L"wb" );
 			break;
 		default:
 			st_core_return( ST_ERR_UNKNOWNOPENMODE );
@@ -91,8 +89,8 @@ void stStream::Open( const wchar_t *path, FILEOPENMODE mode ) {
 		st_core_return( ST_ERR_OPENFILEHANDLE );
 	}
 	// get size of file
-	Move( 0, ST_END );
-	m_size = GetPos();
+	Move( 0L, ST_END );
+	m_size = Pos();
 	MoveHead();
 
 	m_isOpen = true;
@@ -109,28 +107,13 @@ void stStream::Close() {
 	if ( ! m_pfile ) {
 		st_core_return( ST_ERR_NULLFILEHANDLE );
 	}
-	if ( ! fclose( m_pfile ) ) {
+	if ( EOF == fclose( m_pfile ) ) {
 		st_core_return( ST_ERR_CLOSEFILE );
 	}
 	m_pfile = NULL;
 	m_size = 0UL;
 	m_mode = ST_NOMODE;
 	m_isOpen = false;
-	st_core_return( ST_NOERR );
-}
-
-/*
-============
-stStream::Flush
-============
-*/
-void stStream::Flush() {
-	if ( ! m_pfile ) {
-		st_core_return( ST_ERR_NULLFILEHANDLE );
-	}
-	if ( ! fflush( m_pfile ) ) {
-		st_core_return( ST_ERR_FLUSHFILE );
-	}
 	st_core_return( ST_NOERR );
 }
 
@@ -149,18 +132,51 @@ stStream::Move
 ============
 */
 void stStream::Move( const n32 pos, FILEPOSITIONORG org ){
-	if ( ! fseek( m_pfile, pos, org  ) ) {
-		st_core_return( ST_ERR_SEEK );
+	if ( 0 != fseek( m_pfile, pos, org ) ) {
+		st_core_return( org );
 	}
 	st_core_return( ST_NOERR );
 }
 
 /*
 ============
-stStream::Move
+stStream::Save
 ============
 */
-void stStream::Save( const wchar_t *newPath ) {
+void stStream::Save() {
+	if ( ! m_pfile ) {
+		st_core_return( ST_ERR_NULLFILEHANDLE );
+	}
+	if ( ! fflush( m_pfile ) ) {
+		st_core_return( ST_ERR_FLUSHFILE );
+	}
+	st_core_return( ST_NOERR );
+}
+
+/*
+============
+stStream::SaveAs
+============
+*/
+void stStream::SaveAs( const stStrW &newPath ) {
+	FILE   *pnew	  = _wfopen( newPath.Data(), L"wb" );
+	byte8  c		  = 0;
+	const un32 orgPos = Pos();
+
+	if ( !pnew ) {
+		st_core_return( ST_ERR_CREATECLONEFILE );
+	}
+	MoveHead();
+	for( nbus i = 0; i < Size(); ++i ) { 
+		c = fgetc( m_pfile );
+        fputc( c, pnew );
+    }
+	Save();
+	if ( EOF == fclose( m_pfile ) ) {
+		st_core_return( ST_ERR_CLOSECLONEFILE );
+	}
+	Move( orgPos, ST_HEAD );
+	st_core_return( ST_NOERR );
 }
 
 /*
@@ -177,10 +193,10 @@ stStreamHelper::stStreamHelper
 ============
 */
 stStreamHelper::stStreamHelper( stStream *pParent )
-	: m_pParent( pParent ) { }
+	: m_pparent( pParent ) { }
 
 stStreamHelper::stStreamHelper()
-	: m_pParent( NULL ) { }
+	: m_pparent( NULL ) { }
 
 /*
 ============
@@ -213,9 +229,7 @@ stStreamBinary::stStreamBinary()
 stStreamBinary::~stStreamBinary
 ============
 */
-stStreamBinary::~stStreamBinary() {
-	st_safe_del( m_pParent );
-}
+stStreamBinary::~stStreamBinary() { }
 
 /*
 ============
@@ -223,23 +237,21 @@ stStreamBinary::ReadBytes
 ============
 */
 void stStreamBinary::ReadBytes( const un32 counts, byte8 **ppdata ) {
-	un32 kSize = counts;
+	un32 size = counts;
 
 	if ( ! hstream() ) {
 		st_core_return( ST_ERR_NULLSTREAMHANDLE );
 	}
-	if ( ST_READ_BINARY != hstream()->GetMode() ) {
+	if ( ST_READ_BINARY != hstream()->Mode() ) {
 		st_core_return( ST_ERR_UNABLEREAD );
 	}
-	if ( counts > hstream()->GetSize() ) {
+	if ( counts > hstream()->Size() ) {
 		st_core_return( ST_ERR_OUTOFSIZE );
 	} else if ( ! counts ) {
-		kSize = hstream()->GetSize();
+		size = hstream()->Size();
 	}
 
-	* ppdata = new byte8[ kSize + 1 ];
-
-	if( ! fread( * ppdata, 1, kSize , hfile() ) ) {
+	if( ! fread( * ppdata, sizeof( byte8 ), size, hfile() ) ) {
 		st_core_return( ST_ERR_READBYTE );
 	}
 	st_core_return( ST_NOERR );
@@ -254,10 +266,10 @@ void stStreamBinary::WriteBytes( const un32 counts, byte8 *data ) {
 	if ( ! hstream() ) {
 		st_core_return( ST_ERR_NULLSTREAMHANDLE );
 	}
-	if ( ST_WRITE_BINARY != hstream()->GetMode() ) {
+	if ( ST_WRITE_BINARY != hstream()->Mode() ) {
 		st_core_return( ST_ERR_UNABLEWRITE );
 	}
-	if ( counts > hstream()->GetSize() ) {
+	if ( counts > hstream()->Size() ) {
 		st_core_return( ST_ERR_OUTOFSIZE );
 	}
 	if ( ! data ) {
@@ -282,8 +294,8 @@ void stStreamBinary::WriteBytes( const un32 counts, byte8 *data ) {
 stStreamText::stStreamText
 ============
 */
-stStreamText::stStreamText( stStream *parent  )
-	: stStreamHelper( parent  ) { }
+stStreamText::stStreamText( stStream *pparent  )
+	: stStreamHelper( pparent ) { }
 
 stStreamText::stStreamText()
 	: stStreamHelper( NULL ) { }
@@ -293,9 +305,7 @@ stStreamText::stStreamText()
 stStreamText::~stStreamText
 ============
 */
-stStreamText::~stStreamText() {
-	st_safe_del( m_pParent );
-}
+stStreamText::~stStreamText() { }
 
 /*
 ============
@@ -303,29 +313,32 @@ stStreamText::ReadText
 ============
 */
 void stStreamText::ReadText( const un32 counts, stStrW *str ) {
-	un32 ulTextNumbersResult = counts;
+	un32 totalTextsCount = counts;
 
-	if ( ! hstream() )
+	if ( ! hstream() ) {
 		st_core_return( ST_ERR_NULLSTREAMHANDLE );
-	switch ( hstream()->GetMode() ) {
+	}
+	switch ( hstream()->Mode() ) {
 	case ST_READ_UNICODE : {
-		if ( counts > ( hstream()->GetSize() / sizeof( wchar_t ) ) ) {
+		if ( counts > ( hstream()->Size() ) ) {
 			st_core_return( ST_ERR_OUTOFSIZE );
 		} else if ( ! counts ) {
-			ulTextNumbersResult = hstream()->GetSize() / sizeof( wchar_t );
+			totalTextsCount = hstream()->Size();
 		}
-		for ( un32 un = 0; ( un < ulTextNumbersResult ); ++un ) {
-			( *str ).Append( fgetwc( hfile() ) );
+		for ( un32 un = 0; ( un < totalTextsCount ); ++un ) {
+			str->Append( fgetwc( hfile() ) );
 		}
+		str->Data()[totalTextsCount] = L'\0';
 		break;
 	}
 	case ST_READ_UTF8 : {
 		if ( ! counts ) {
-			ulTextNumbersResult = hstream()->GetSize();
+			totalTextsCount = hstream()->Size();
 		}
-		for ( un32 un = 0; ( un < ulTextNumbersResult ) || ( ! hstream()->IsEOF() ); ++un ) {
-			( *str ).Append( fgetwc( hfile() ) );
+		for ( un32 un = 0; ( un < totalTextsCount ) || ( ! hstream()->IsEOF() ); ++un ) {
+			str->Append( fgetwc( hfile() ) );
 		}
+		str->Data()[totalTextsCount] = L'\0';
 		break;
 	}
 	default :
@@ -344,13 +357,13 @@ void stStreamText::WriteText( const un32 counts, const stStrW &str ) {
 	if ( ! hstream() ) {
 		st_core_return( ST_ERR_NULLSTREAMHANDLE );
 	}
-	if ( hstream()->GetMode() != ST_WRITE_UTF8 || hstream()->GetMode() != ST_WRITE_UNICODE ) {
+	if ( ! ( ( hstream()->Mode() == ST_WRITE_UTF8 ) || ( hstream()->Mode() == ST_WRITE_UNICODE ) ) ) {
 		st_core_return( ST_ERR_UNABLEWRITE );
 	}
-	if ( counts > ( hstream()->GetSize() / sizeof( wchar_t ) ) ) {
+	if ( counts > hstream()->Size() ) {
 		st_core_return( ST_ERR_OUTOFSIZE );
 	}
-	if ( ! fputws( str.Data(), hfile() ) ) {
+	if ( fputws( str.Data(), hfile() ) < 0 ) {
 		st_core_return( ST_ERR_WRITETEXT );
 	}
 	st_core_return( ST_NOERR );

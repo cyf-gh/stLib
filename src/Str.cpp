@@ -1,5 +1,5 @@
-#include "Str.h"
-#include "../core/Core.h"
+#include "..\include\base\Str.h"
+#include "..\include\core\Core.h"
 
 using namespace stLibEnum;
 

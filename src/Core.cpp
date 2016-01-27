@@ -1,7 +1,7 @@
 #include <malloc.h>
-#include "Core.h"
-#include "..\utils\Maths.h"
-#include "..\base\Str.h"
+#include "..\include\core\Core.h"
+#include "..\include\utils\Maths.h"
+#include "..\include\base\Str.h"
 
 using namespace stLibCore;
 using namespace stLibUtils::Maths;
@@ -32,7 +32,7 @@ private:
 
 public:
 	void			Discard( const stResult curStatus, const char *newFunctionName );
-	void *			Return( const stResult returnCode, void **ppvarToReturn );
+	void *			Return( const stResult returnCode, void **ppvarToReturn = NULL );
 
 					stFunctionControl() : m_lastErr( ST_NOERR ) { }
 					~stFunctionControl() { };
@@ -54,12 +54,15 @@ void *stCore::stFunctionControl::Return( const stResult code, void **ppvar ) {
 	m_lastErr = code;
 	if( IsIn( ST_ERR_LEVEL1_UPPER_BOUND, ST_ERR_LEVEL2_UPPER_BOUND, code ) ) {
 		printf( "%s", s_curLocDesc );
+		return NULL;
 	} else if( IsIn( ST_ERR_LEVEL3_UPPER_BOUND, ST_ERR_LEVEL2_UPPER_BOUND, code ) ) {
 		throw s_curLocDesc;
+		return NULL;
 	} else {
 		// no error occurs.
+		return NULL;
 	}
-	return *ppvar;
+	return ( ppvar == NULL ) ? NULL : *ppvar;
 }
 
 /*

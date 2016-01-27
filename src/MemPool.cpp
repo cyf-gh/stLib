@@ -1,8 +1,8 @@
 #include <malloc.h>
-#include "..\utils\Maths.h"
-#include "ErrCode.h"
-#include "Core.h"
-#include "MemPool.h"
+#include "..\include\utils\Maths.h"
+#include "..\include\core\ErrCode.h"
+#include "..\include\core\Core.h"
+#include "..\include\core\MemPool.h"
 
 using namespace stLibErrCode;
 

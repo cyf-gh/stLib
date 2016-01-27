@@ -1,3 +1,5 @@
+/* This feature was discarded. */
+#ifdef ST_SWITCH_MEMORYPOOL_ON
 /*
 
 Provides memory pool features.
@@ -5,6 +7,8 @@ Provides memory pool features.
 	Discarded.
 
 */
+#	error "stLib memory pool was discarded."
+
 #ifndef __STLIB_MEMPOOL_H__
 #define __STLIB_MEMPOOL_H__
 
@@ -115,3 +119,5 @@ ST_INLINE stMemPool &stMemPool::Instance( const un64 eachCakeSize = ST_MEMPOOL_D
 }
 
 #endif /* !__STLIB_MEMPOOL_H__ */
+
+#endif /* !ST_SWITCH_MEMORYPOOL_ON */

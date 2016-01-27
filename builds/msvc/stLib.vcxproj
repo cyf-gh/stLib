@@ -37,6 +37,7 @@
     <ClInclude Include="..\..\include\core\MemPool.h" />
     <ClInclude Include="..\..\include\core\Thread.h" />
     <ClInclude Include="..\..\include\Enum.h" />
+    <ClInclude Include="..\..\include\Switch.h" />
     <ClInclude Include="..\..\include\utils\Converter.h" />
     <ClInclude Include="..\..\include\utils\Dir.h" />
     <ClInclude Include="..\..\include\utils\Maths.h" />

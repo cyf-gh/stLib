@@ -1,7 +1,10 @@
 #include "..\include\base\Str.h"
 #include "..\include\core\Core.h"
+#include "..\include\core\ErrCode.h"
 
 using namespace stLibEnum;
+using namespace stLibCore;
+using namespace stLibErrCode;
 
 const un8 sizeofCH  = sizeof( char );
 const un8 sizeofWCH = sizeof( wchar_t );
@@ -77,7 +80,7 @@ stStrMem::SafeDelW
 ============
 */
 void stStrMem::SafeDelW( wchar_t **ppsrc ) {
-	st_delete_arr<wchar_t *>( ppsrc );
+	st_delete_arr<wchar_t>( ppsrc );
 }
 
 /*
@@ -208,7 +211,7 @@ stStrMem::SafeDelA
 ============
 */
 void stStrMem::SafeDelA( char **ppsrc ) { 
-	st_delete_arr<char *>( ppsrc ); 
+	st_delete_arr<char>( ppsrc ); 
 }
 
 /*
@@ -331,7 +334,7 @@ stStrW::~stStrW
 ============
 */
 stStrW::~stStrW() {
-    st_delete_arr<wchar_t *>( &m_pdata );
+    st_delete_arr<wchar_t>( &m_pdata );
 }
 
 /*
@@ -357,7 +360,7 @@ n32 stStrW::Find( const wchar_t key, const un32 times ) const {
         }
         ++index;
     }
-    return -1;
+    return ST_ERR_NOTFOUND;
 }
 
 /*
@@ -381,7 +384,7 @@ n32 stStrW::FindBack( const wchar_t key, const un32 times ) const {
         }
         ++index;
     }
-    return -1;
+    return ST_ERR_NOTFOUND;
 }
 
 /*
@@ -707,7 +710,7 @@ n32 stStrA::Find( const char key, const un32 times ) const {
         }
         ++index;
     }
-    return -1;
+    return ST_ERR_NOTFOUND;
 }
 
 /*
@@ -731,7 +734,7 @@ n32 stStrA::FindBack( const char key, const un32 times ) const {
         }
         ++index;
     }
-    return -1;
+    return ST_ERR_NOTFOUND;
 }
 
 /*

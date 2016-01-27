@@ -11,6 +11,22 @@ class stStrW;
 
 #include "Def.h"
 
+#ifdef         ST_SWITCH_MEMORYPOOL_ON
+#	include "MemPool.h"
+#elif defined( ST_SWITCH_JEMALLOC_ON )
+#	include "jemalloc.h"
+			/* !ST_SWITCH_JEMALLOC_ON */
+#elif defined( ST_SWITCH_MEMORYPOOL_OFF )
+		   /* !ST_SWITCH_MEMORYPOOL_OFF */
+#endif	   /* !ST_SWITCH_MEMORYPOOL_ON */
+
+#ifdef		  ST_SWITCH_MT_SAFE_ON
+#	include "Thread.h"
+
+#elif defined( ST_SWITCH_MT_SAFE_OFF )
+		   /* !ST_SWITCH_MT_SAFE_OFF */
+#endif	   /* !ST_SWITCH_MT_SAFE_ON */
+
 namespace stLibCore {
 
 /***********************************************************************
@@ -50,7 +66,7 @@ public:
 
 ***********************************************************************/
 
-#ifdef _ST_DEBUG
+#ifdef		_ST_DEBUG
 #	pragma message( "Target Switch:[ stLib DETAILED INFO ] : ON" )
 	static char					s_curLocDesc[ 2048 ];  // info description string.
 
@@ -68,13 +84,13 @@ public:
 			"FILE: %s\nFUNCTION NAME: %s\nLINE: %d\nDATE: %s\nTIME: %s\n", \
 			__FILE__, __FUNCTION__, __LINE__, __DATE__, __TIME__ )
 
-#else /* !_ST_DEBUG */
+#else	/* !_ST_DEBUG */
 #	pragma message( "Target Switch:[ ERROR INFO ] : OFF" )
 	static char					s_curLocDesc[ 1 ];  // info description string.
 
 #	define st_sys_record_cur_loc_desc();
 
-#endif /* !_ST_RELEASE */
+#endif  /* !_ST_RELEASE */
 
 /*
 ============
@@ -98,7 +114,6 @@ st_core_return
 	st_sys_record_cur_loc_desc(); \
 	stLibCore::stCore::CoreReturn( function_return_code ); \
 	return
-
 /*
 ============
 st_core_discard
@@ -124,8 +139,6 @@ Returns current system API last error.
 #define st_sys_last_err_desc() \
 	stLibCore::stCore::SysLastErrDesc()
 
-} /* stLibCore */
-
 /***********************************************************************
 
   Memory pool
@@ -134,9 +147,17 @@ Returns current system API last error.
 
 #ifdef         ST_SWITCH_MEMORYPOOL_ON
 
-#	include "MemPool.h"
 #	pragma message( "Target Switch:[ MEMORY POOL ] : ON" )
 #	error "stLib memory pool has been discarded."
+	/*
+	============
+	st_sys_heap_memory_size
+
+	Returns a size of heap memory points to.  Others will cause a error.
+	============
+	*/
+#	define st_sys_heap_memory_size( memory ) \
+		stLibCore::stCore::HeapSize( memory )
 
 	template<typename T>
 	ST_INLINE static T *st_new( un64 objNum ) {
@@ -149,12 +170,12 @@ Returns current system API last error.
 	}
 
 	template<typename T>
-	ST_INLINE static void st_delete( T *pt ) {
+	ST_INLINE static void st_delete( T **pt ) {
 		stMemPool::Instance().Free( *pt );
 	}
 
 	template<typename T>
-	ST_INLINE static void st_delete_arr( T *pt ) {
+	ST_INLINE static void st_delete_arr( T **pt ) {
 		stMemPool::Instance().Free( *pt );
 	}
 
@@ -173,8 +194,7 @@ Returns current system API last error.
 
 #elif defined( ST_SWITCH_JEMALLOC_ON )
 #	pragma message( "Target Switch:[ JEMALLOC ] : ON" )
-#	pragma message( "\n----------------\njemalloc\n----------------\nhttps://github.com/jemalloc/jemalloc\n\nCopyright (C) 2002-2015 Jason Evans\n\n" )
-#	include "jemalloc.h"
+#	pragma message( "\n----------------\njemalloc\n----------------\nhttps://github.com/jemalloc/jemalloc\n\nCopyright (C) 2002-2015 Jason Evans\n" )
 #	pragma comment ( lib, "libjemalloc_x86_Release-Static.lib" )
 
 #	ifdef	   _ST_DEBUG
@@ -184,6 +204,7 @@ Returns current system API last error.
 	extern "C" __declspec( dllexport ) void		je_free(void *ptr);
 	extern "C" __declspec( dllexport ) size_t	je_malloc_usable_size(
 	JEMALLOC_USABLE_SIZE_CONST void	*ptr);
+
 	/*
 	============
 	st_sys_heap_memory_size
@@ -192,7 +213,7 @@ Returns current system API last error.
 	============
 	*/
 #	define st_sys_heap_memory_size( memory ) \
-		je_malloc_usable_size( memory )
+		stLibCore::je_malloc_usable_size( memory )
 
 	template<typename T>
 	ST_INLINE static T *st_new( un64 objNum ) {
@@ -205,12 +226,12 @@ Returns current system API last error.
 	}
 
 	template<typename T>
-	ST_INLINE static void st_delete( T *pt ) {
+	ST_INLINE static void st_delete( T **pt ) {
 		je_free( *pt );
 	}
 
 	template<typename T>
-	ST_INLINE static void st_delete_arr( T *pt ) {
+	ST_INLINE static void st_delete_arr( T **pt ) {
 		je_free( *pt );
 	}
 
@@ -251,12 +272,12 @@ Returns current system API last error.
 	}
 
 	template<typename T>
-	ST_INLINE static void st_delete( T *pt ) {
+	ST_INLINE static void st_delete( T **pt ) {
 		st_safe_del( *pt );
 	}
 
 	template<typename T>
-	ST_INLINE static void st_delete_arr( T *pt ) {
+	ST_INLINE static void st_delete_arr( T **pt ) {
 		st_safe_del_arr( *pt );
 	}
 	
@@ -275,5 +296,32 @@ Returns current system API last error.
            /* !ST_SWITCH_MEMORYPOOL_OFF */
 
 #endif     /* !ST_SWITCH_MEMORYPOOL_ON */
+
+/***********************************************************************
+
+  MT Safe
+
+***********************************************************************/
+#ifdef		  ST_SWITCH_MT_SAFE_ON
+	stCriticalSection s_globalCS;
+
+	/*
+	============
+	st_atomic
+	============
+	*/
+#	define st_atomic( code ) \
+	s_globalCS.Lock(); \
+	code; \
+	s_globalCS.Unlock()
+
+#elif defined( ST_SWITCH_MT_SAFE_OFF )
+#	define st_atomic( code ) \
+	code
+
+		   /* !ST_SWITCH_MT_SAFE_OFF */
+#endif     /* !ST_SWITCH_MT_SAFE_ON */
+
+} /* stLibCore */
 
 #endif /* !__STLIB_CORE_H__ */

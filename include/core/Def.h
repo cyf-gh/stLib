@@ -9,6 +9,8 @@ Base stLib type and macro defines.
 
 #include <cstdint>
 
+#include "..\Switch.h"
+
 /***********************************************************************
 
     Platform
@@ -112,13 +114,6 @@ typedef double			f64;
 // BOOM
 #define ST_ERR_LEVEL3_UPPER_BOUND	( ( stResult ) -10001 )
 #define ST_NOERR					( ( stResult ) 0	  )
-
-/***********************************************************************
-
-    Default define
-
-***********************************************************************/
-#define                 ST_SWITCH_JEMALLOC_ON
 
 /*
 ============

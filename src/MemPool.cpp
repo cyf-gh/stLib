@@ -1,3 +1,5 @@
+#ifdef ST_SWITCH_MEMORYPOOL_ON
+
 #include <malloc.h>
 #include "..\include\utils\Maths.h"
 #include "..\include\core\ErrCode.h"
@@ -320,3 +322,4 @@ void stMemPool::Free( void *pmem ) {
 	st_core_return( ST_ERR_FREEANONBELONGNINGMEM );
 }
 
+#endif /* !ST_SWITCH_MEMORYPOOL_ON */

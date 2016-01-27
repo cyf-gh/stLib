@@ -24,5 +24,6 @@
     <ClInclude Include="..\..\include\utils\Maths.h" />
     <ClInclude Include="..\..\include\utils\Random.h" />
     <ClInclude Include="..\..\include\utils\Stopwatch.h" />
+    <ClInclude Include="..\..\include\Switch.h" />
   </ItemGroup>
 </Project>

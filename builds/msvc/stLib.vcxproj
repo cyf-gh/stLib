@@ -95,6 +95,9 @@
     <OutDir>$(ProjectDir)..\..\bin\</OutDir>
     <IntDir>$(ProjectDir)..\..\objs\</IntDir>
     <TargetName>stLibx86_d</TargetName>
+    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
+    <IncludePath>C:\dev\Projects\stLib\include\%24ref%24;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\dev\Projects\stLib\include\%24ref%24;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <NMakeOutput>stLib.exe</NMakeOutput>
@@ -107,6 +110,9 @@
     <BuildLog>
       <Path>$(ProjectDir)..\..\objs\logs</Path>
     </BuildLog>
+    <ClCompile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

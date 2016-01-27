@@ -35,7 +35,7 @@ public:
 	wchar_t *			FitW( wchar_t **ppsrc );
 	wchar_t *			AppendStrW( wchar_t **ppsrc, const wchar_t *appendSrc );
 	wchar_t *			ExtendW( wchar_t **ppsrc, un32 newSize );
-	ST_INLINE void		SafeDelW( wchar_t **ppsrc ) { st_safe_del_arr( *ppsrc ); }
+	void				SafeDelW( wchar_t **ppsrc );
 
 	char *				NewAndCpyA( char **ppalloc, const char *cpySrc );
 	char *				NewAndCpyA( const char *cpySrc );
@@ -45,7 +45,7 @@ public:
 	char *				FitA( char **ppsrc );
 	char *				AppendStrA( char **ppsrc, const char *appendSrc );
 	char *				ExtendA( char **ppsrc, un32 newSize );
-	ST_INLINE void      SafeDelA( char **ppsrc ) { st_safe_del_arr( *ppsrc ); }
+	void				SafeDelA( char **ppsrc );
 
 	wchar_t *			AToW( wchar_t **ppsrc, const char *targetSrc, const n32 codePage = 0 );
 	char *				WToA( char **ppsrc, const wchar_t *targetSrc, const n32 codePage = 0 );

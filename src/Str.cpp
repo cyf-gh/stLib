@@ -73,6 +73,15 @@ wchar_t *stStrMem::NewW() {
 
 /*
 ============
+stStrMem::SafeDelW
+============
+*/
+void stStrMem::SafeDelW( wchar_t **ppsrc ) {
+	st_delete_arr<wchar_t *>( ppsrc );
+}
+
+/*
+============
 stStrMem::ZeroMemW
 
 Clears string content.
@@ -95,8 +104,8 @@ wchar_t *stStrMem::FitW( wchar_t **ppsrc ) {
 
     *ppsrc = st_new<wchar_t>( wcslen( *ppsrc ) + 1 );
     wcscpy( *ppsrc, src );
-    SafeDelW( &src );
-    return *ppsrc;
+	SafeDelW( ppsrc );
+	return *ppsrc;
 }
 
 /*
@@ -121,7 +130,7 @@ wchar_t *stStrMem::ExtendW( wchar_t **ppsrc, un32 newSize ) {
     *ppsrc = st_new<wchar_t>( newSize );
     ZeroMemW( ppsrc );
     wcscpy( *ppsrc, src );
-    SafeDelW( &src );
+    SafeDelW( ppsrc );
     return *ppsrc;
 }
 
@@ -191,6 +200,15 @@ Clears string content.
 char *stStrMem::ZeroMemA( char **ppsrc ) {
     st_zero_memory( *ppsrc, sizeofCH );
     return *ppsrc;
+}
+
+/*
+============
+stStrMem::SafeDelA
+============
+*/
+void stStrMem::SafeDelA( char **ppsrc ) { 
+	st_delete_arr<char *>( ppsrc ); 
 }
 
 /*
@@ -313,7 +331,7 @@ stStrW::~stStrW
 ============
 */
 stStrW::~stStrW() {
-    m_mem.SafeDelW( &m_pdata );
+    st_delete_arr<wchar_t *>( &m_pdata );
 }
 
 /*
@@ -553,7 +571,7 @@ bool stStrW::Split( const wchar_t key, std::vector<stStrW *> &words ) const {
 
     for ( un32 i = 0; i < ( Length() + 1 ); ++i ) {
         if ( *str == key ) {
-            words.push_back( new stStrW( word.Data() ) );
+            words.push_back( st_new_class<stStrW>( stStrW( word.Data() ) ) );
         } else {
             word.Append( &( *str ) );
             ++str;
@@ -892,7 +910,7 @@ bool stStrA::Split( const char key, std::vector<stStrA *> &words ) const {
 
     for ( un32 i = 0; i < ( Length() + 1 ); ++i ) {
         if ( *str == key ) {
-            words.push_back( new stStrA( word.Data() ) );
+            words.push_back( st_new_class<stStrA>( stStrA( word.Data() ) ) );
         } else {
             word.Append( &( *str ) );
             ++str;

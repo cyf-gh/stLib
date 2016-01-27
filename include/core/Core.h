@@ -40,7 +40,6 @@ public:
 	static void					CoreDiscard( const stResult curStatus, const char *newFunctionName );
 
 	static stResult				LastErrCode();
-	static void					RecordLocDesc();
 
 	static stStrW				SysLastErrDesc();
 };
@@ -52,7 +51,7 @@ public:
 ***********************************************************************/
 
 #ifdef _ST_DEBUG
-    #pragma message( "Target Switch:[ stLib DETAILED INFO ] : ON" )
+#	pragma message( "Target Switch:[ stLib DETAILED INFO ] : ON" )
 	static char					s_curLocDesc[ 2048 ];  // info description string.
 
 	/*
@@ -70,10 +69,10 @@ public:
 			__FILE__, __FUNCTION__, __LINE__, __DATE__, __TIME__ )
 
 #else /* !_ST_DEBUG */
-    #pragma message( "Target Switch:[ ERROR INFO ] : OFF" )
+#	pragma message( "Target Switch:[ ERROR INFO ] : OFF" )
 	static char					s_curLocDesc[ 1 ];  // info description string.
 
-	#define st_sys_record_cur_loc_desc();
+#	define st_sys_record_cur_loc_desc();
 
 #endif /* !_ST_RELEASE */
 
@@ -125,16 +124,6 @@ Returns current system API last error.
 #define st_sys_last_err_desc() \
 	stLibCore::stCore::SysLastErrDesc()
 
-/*
-============
-st_sys_heap_memory_size
-
-Returns a size of heap memory points to.  Others will cause a error.
-============
-*/
-#define st_sys_heap_memory_size( memory ) \
-	stLibCore::stCore::HeapSize( memory )
-
 } /* stLibCore */
 
 /***********************************************************************
@@ -145,36 +134,144 @@ Returns a size of heap memory points to.  Others will cause a error.
 
 #ifdef         ST_SWITCH_MEMORYPOOL_ON
 
-#include "MemPool.h"
-#pragma message( "Target Switch:[ MEMORY POOL ] : ON" )
+#	include "MemPool.h"
+#	pragma message( "Target Switch:[ MEMORY POOL ] : ON" )
+#	error "stLib memory pool has been discarded."
 
-template<typename T>
-ST_INLINE T *st_new( un64 objNum ) {
-    return ( T* )( stMemPool::Instance().Alloc( objNum * sizeof( T ) ) );
-}
+	template<typename T>
+	ST_INLINE static T *st_new( un64 objNum ) {
+		return ( T* )( stMemPool::Instance().Alloc( objNum * sizeof( T ) ) );
+	}
 
-template<typename T>
-ST_INLINE void st_delete( T *pt ) {
-    stMemPool::Instance().Free( *pt );
-}
+	template<typename T>
+	ST_INLINE static T *st_new() {
+		return ( T* )( stMemPool::Instance().Alloc( 1 * sizeof( T ) ) );
+	}
+
+	template<typename T>
+	ST_INLINE static void st_delete( T *pt ) {
+		stMemPool::Instance().Free( *pt );
+	}
+
+	template<typename T>
+	ST_INLINE static void st_delete_arr( T *pt ) {
+		stMemPool::Instance().Free( *pt );
+	}
+
+	template<typename T>
+	ST_INLINE static T *st_new_class( const T& instance ) {
+		T * const mem = ( T* )( stMemPool::Instance().Alloc( 1 * sizeof( T ) ) );
+		memcpy( mem, &instance, sizeof( T ) );
+		return mem;
+	}
+
+	template<typename T>
+	ST_INLINE static void st_delete_class( T **pt ) {
+		( *pt )->~T();
+		stMemPool::Instance().Free( *pt );
+	}
+
+#elif defined( ST_SWITCH_JEMALLOC_ON )
+#	pragma message( "Target Switch:[ JEMALLOC ] : ON" )
+#	pragma message( "\n----------------\njemalloc\n----------------\nhttps://github.com/jemalloc/jemalloc\n\nCopyright (C) 2002-2015 Jason Evans\n\n" )
+#	include "jemalloc.h"
+#	pragma comment ( lib, "libjemalloc_x86_Release-Static.lib" )
+
+#	ifdef	   _ST_DEBUG
+#		pragma                 warning( disable : 4273 ) // jemalloc release lib.
+#	endif  /* !_ST_DEBUG */
+	extern "C" __declspec( dllexport ) void*	je_malloc( size_t size );
+	extern "C" __declspec( dllexport ) void		je_free(void *ptr);
+	extern "C" __declspec( dllexport ) size_t	je_malloc_usable_size(
+	JEMALLOC_USABLE_SIZE_CONST void	*ptr);
+	/*
+	============
+	st_sys_heap_memory_size
+
+	Returns a size of jemalloced heap memory points to.
+	============
+	*/
+#	define st_sys_heap_memory_size( memory ) \
+		je_malloc_usable_size( memory )
+
+	template<typename T>
+	ST_INLINE static T *st_new( un64 objNum ) {
+		return ( T * )je_malloc( objNum * sizeof( T ) );
+	}
+
+	template<typename T>
+	ST_INLINE static T *st_new() {
+		return ( T * )je_malloc( 1 * sizeof( T ) );
+	}
+
+	template<typename T>
+	ST_INLINE static void st_delete( T *pt ) {
+		je_free( *pt );
+	}
+
+	template<typename T>
+	ST_INLINE static void st_delete_arr( T *pt ) {
+		je_free( *pt );
+	}
+
+	template<typename T>
+	ST_INLINE static T *st_new_class( const T& instance ) {
+		T * const mem = ( T * )( je_malloc( 1 * sizeof( T ) ) );
+		memcpy( mem, &instance, sizeof( T ) );
+		return mem;
+	}
+
+	template<typename T>
+	ST_INLINE static void st_delete_class( T **pt ) {
+		( *pt )->~T();
+		je_free( ( void * )( *pt ) );
+	}
 
 #elif defined( ST_SWITCH_MEMORYPOOL_OFF )
-#pragma message( "Target Switch:[ MEMORY POOL ] : OFF" )
+#	pragma message( "Target Switch:[ MEMORY POOL ] : OFF" )
 
-template<typename T>
-ST_INLINE T *st_new( un64 objNum ) {
-    return new T[ objNum ];
-}
+	/*
+	============
+	st_sys_heap_memory_size
 
-template<typename T>
-ST_INLINE void st_delete( T *pt ) {
-    st_safe_del( *pt );
-}
+	Returns a size of heap memory points to.  Others will cause a error.
+	============
+	*/
+#	define st_sys_heap_memory_size( memory ) \
+		stLibCore::stCore::HeapSize( memory )
 
-template<typename T>
-ST_INLINE void st_delete_arr( T *pt ) {
-    st_safe_del_arr( *pt );
-}
+	template<typename T>
+	ST_INLINE static T *st_new( un64 objNum ) {
+		return new T[ objNum ];
+	}
+
+	template<typename T>
+	ST_INLINE static T *st_new() {
+		return new T;
+	}
+
+	template<typename T>
+	ST_INLINE static void st_delete( T *pt ) {
+		st_safe_del( *pt );
+	}
+
+	template<typename T>
+	ST_INLINE static void st_delete_arr( T *pt ) {
+		st_safe_del_arr( *pt );
+	}
+	
+	template<typename T>
+	ST_INLINE static T *st_new_class( const T& instance ) {
+		T * const mem = new T;
+		memcpy( mem, &instance, sizeof( T ) );
+		return mem;
+	}
+
+	template<typename T>
+	ST_INLINE static void st_delete_class( T **pt ) {
+		st_safe_del( *pt );
+	}
+
            /* !ST_SWITCH_MEMORYPOOL_OFF */
 
 #endif     /* !ST_SWITCH_MEMORYPOOL_ON */

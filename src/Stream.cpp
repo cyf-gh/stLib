@@ -147,7 +147,7 @@ void stStream::Save() {
 	if ( ! m_pfile ) {
 		st_core_return( ST_ERR_NULLFILEHANDLE );
 	}
-	if ( ! fflush( m_pfile ) ) {
+	if ( fflush( m_pfile ) != 0 ) {
 		st_core_return( ST_ERR_FLUSHFILE );
 	}
 	st_core_return( ST_NOERR );
@@ -172,7 +172,7 @@ void stStream::SaveAs( const stStrW &newPath ) {
         fputc( c, pnew );
     }
 	Save();
-	if ( EOF == fclose( m_pfile ) ) {
+	if ( EOF == fclose( pnew ) ) {
 		st_core_return( ST_ERR_CLOSECLONEFILE );
 	}
 	Move( orgPos, ST_HEAD );

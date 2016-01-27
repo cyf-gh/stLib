@@ -15,29 +15,29 @@ Base stLib type and macro defines.
 
 ***********************************************************************/
 #ifdef         _WIN32
-#define                 WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-#define                 _ST_PLATFORM_WIN32
-#pragma                 message( "Target Platform:[ WINDOWS ]" )
-
-#ifdef         _WIN64
-#define                 _ST_PLATFORM_WIN64
-#pragma                 message( "Target Platform:[ WINDOWSx64 ]" )
-#endif     /* !_WIN64 */
+#	define                 WIN32_LEAN_AND_MEAN
+#	include <Windows.h>
+#	define                 _ST_PLATFORM_WIN32
+#	pragma                 message( "Target Platform:[ WINDOWS ]" )
+	
+#	ifdef         _WIN64
+#		define                 _ST_PLATFORM_WIN64
+#		pragma                 message( "Target Platform:[ WINDOWSx64 ]" )
+#	endif     /* !_WIN64 */
 
 #elif defined( __linux__ )
-#define                 _ST_PLATFORM_LINUX
-#pragma                 message( "Target Platform:[ LINUX ]" )
+#	define                 _ST_PLATFORM_LINUX
+#	pragma                 message( "Target Platform:[ LINUX ]" )
            /* !__linux__ */
 
-#elif defined( __APPLE__ )
-#define                 _ST_PLATFORM_APPLEOSX
-#pragma                 message( "Target Platform:[ APPLE OSX ]" )
+#   elif defined( __APPLE__ )
+#   define                 _ST_PLATFORM_APPLEOSX
+#   pragma                 message( "Target Platform:[ APPLE OSX ]" )
            /* !__APPLE__ */
 
 #else
-#define                 _ST_PLATFORM_UNKNOWN
-#pragma                 message( "Target Compiler:[ UNKNOWN ]" )
+#   define                 _ST_PLATFORM_UNKNOWN
+#   pragma                 message( "Target Compiler:[ UNKNOWN ]" )
 #endif     /* !_WIN32 */
 
 /***********************************************************************
@@ -46,17 +46,17 @@ Base stLib type and macro defines.
 
 ***********************************************************************/
 #ifdef         _DEBUG
-#define                 _ST_DEBUG
-#pragma                 message( "Target Build Mode:[ DEBUG ]" )
+#	define                 _ST_DEBUG
+#	pragma                 message( "Target Build Mode:[ DEBUG ]" )
 
 #elif defined( _ST_DB_ENABLE )
-#define                 _ST_DEBUG
-#pragma                 message( "Target Build Mode:[ DEBUG ]" )
+#	define                 _ST_DEBUG
+#	pragma                 message( "Target Build Mode:[ DEBUG ]" )
            /* !_ST_DB_ENABLE */
 
 #else
-#define                 _ST_RELEASE
-#pragma                 message( "Target Build Mode:[ RELEASE ]" )
+#	define                 _ST_RELEASE
+#	pragma                 message( "Target Build Mode:[ RELEASE ]" )
            /* !_ST_RELEASE */
 
 #endif     /* !_DEBUG */
@@ -68,16 +68,16 @@ Base stLib type and macro defines.
 ***********************************************************************/
 #ifdef        _MSC_VER
 
-#pragma                 warning( disable : 4996) // Using unsafe functions.
-#define                 ST_INLINE  __forceinline
-#pragma                 message( "Target Compiler:[ MSVC ]" )
+#	pragma                 warning( disable : 4996 ) // Using unsafe functions.
+#	define                 ST_INLINE  __forceinline
+#	pragma                 message( "Target Compiler:[ MSVC ]" )
 
            /* !_MSC_VER */
 
 #elif defined( __GNUC__ )
 
-#define                 ST_INLINE inline
-#pragma                 message( "Target Compiler:[ GCC ]" )
+#	define                 ST_INLINE inline
+#	pragma                 message( "Target Compiler:[ GCC ]" )
 
 #endif     /* !__GNUC__ */
 
@@ -118,7 +118,7 @@ typedef double			f64;
     Default define
 
 ***********************************************************************/
-#define                 ST_SWITCH_MEMORYPOOL_OFF
+#define                 ST_SWITCH_JEMALLOC_ON
 
 /*
 ============

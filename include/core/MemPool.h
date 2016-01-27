@@ -2,11 +2,11 @@
 
 Provides memory pool features.
 
+	Discarded.
+
 */
 #ifndef __STLIB_MEMPOOL_H__
 #define __STLIB_MEMPOOL_H__
-
-#pragma message( "Target ERROR:[ stLib Memory pool has very low performance, do not use it any more! ]" )
 
 #include <vector>
 #include "Def.h"

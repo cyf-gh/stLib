@@ -1,4 +1,4 @@
-﻿#include "..\include\core\Core.h"
+#include "..\include\core\Core.h"
 #include "..\include\core\ErrCode.h"
 #include "..\include\base\Stream.h"
 #include "..\include\base\Str.h"

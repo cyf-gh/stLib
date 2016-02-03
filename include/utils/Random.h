@@ -1,4 +1,4 @@
-﻿/*
+/*
 
 Base random number class.
 

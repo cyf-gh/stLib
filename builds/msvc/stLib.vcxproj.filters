@@ -25,5 +25,6 @@
     <ClInclude Include="..\..\include\utils\Random.h" />
     <ClInclude Include="..\..\include\utils\Stopwatch.h" />
     <ClInclude Include="..\..\include\Switch.h" />
+    <ClInclude Include="..\..\include\core\Event.h" />
   </ItemGroup>
 </Project>

@@ -34,6 +34,7 @@
     <ClInclude Include="..\..\include\core\Core.h" />
     <ClInclude Include="..\..\include\core\Def.h" />
     <ClInclude Include="..\..\include\core\ErrCode.h" />
+    <ClInclude Include="..\..\include\core\Event.h" />
     <ClInclude Include="..\..\include\core\MemPool.h" />
     <ClInclude Include="..\..\include\core\Thread.h" />
     <ClInclude Include="..\..\include\Enum.h" />
@@ -97,8 +98,8 @@
     <IntDir>$(ProjectDir)..\..\objs\</IntDir>
     <TargetName>stLibx86_d</TargetName>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
-    <IncludePath>C:\dev\Projects\stLib\include\%24ref%24;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\dev\Projects\stLib\include\%24ref%24;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\..\include\%24ref%24;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\include\%24ref%24;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <NMakeOutput>stLib.exe</NMakeOutput>

@@ -1,4 +1,4 @@
-﻿/*
+/*
 
 Defines internal error codes.
 

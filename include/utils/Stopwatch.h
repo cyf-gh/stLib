@@ -1,4 +1,4 @@
-﻿/*
+/*
 
 Base stop watch class.  Provides high-precision stop watch.
 

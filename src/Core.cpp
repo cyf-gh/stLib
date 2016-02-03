@@ -60,9 +60,8 @@ void *stCore::stFunctionControl::Return( const stResult code, void **ppvar ) {
 		return NULL;
 	} else {
 		// no error occurs.
-		return NULL;
+		return ( ppvar == NULL ) ? NULL : *ppvar;
 	}
-	return ( ppvar == NULL ) ? NULL : *ppvar;
 }
 
 /*

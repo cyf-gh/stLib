@@ -9,6 +9,7 @@ Provides core error record of stLib.
 
 class stStrW;
 
+#include <stdio.h>
 #include "Def.h"
 
 #ifdef         ST_SWITCH_MEMORYPOOL_ON
@@ -43,7 +44,7 @@ class stCore {
 private:
 								stCore();
 								stCore( const stCore & );
-								~stCore();
+								~stCore() { }
 
 public:
 	static stFunctionControl *	m_controller;

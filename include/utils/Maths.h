@@ -1,4 +1,4 @@
-﻿/*
+/*
 
 Base class and methods for maths.  Provides 2D vector class, rectangle class.
 
@@ -119,7 +119,7 @@ public:
 	static stVec2   Sub( const stVec2 &v1, const stVec2 &v2 );
 
 					stVec2( const stVec2 &v ) { x = v.x; y = v.y; }
-					stVec2( f64 x, f64 y )
+					stVec2( const f64 x, const f64 y )
 						: x( x ), y( y ) { }
 					stVec2()
 						: x( 0 ), y( 0 ) { }
@@ -146,11 +146,11 @@ public:
 	const f64		Width()						 const { return a.x - b.y; }
 	const f64		Height()					 const { return b.y - a.y; }
 
-	static void		Set( stRect *prect, const RECT &r );
-	static RECT		Get( const stRect &rect );
+	stRect &		FromRECT( const RECT &r );
+	RECT			ToRECT();
 
 					stRect( const stRect &r ) { a = r.a; b = r.b; }
-					stRect( const stVec2& v1, const stVec2& v2 )
+					stRect( const stVec2 &v1, const stVec2 &v2 )
 						: a( v1 ), b( v2 ) { }
 					stRect( const f64 x1, const f64 y1, const f64 x2, const f64 y2 )
 						: a( x1, y1 ), b( x2, y2 ) { }
@@ -207,17 +207,18 @@ ST_INLINE const f64	stVec2::Length() const {
 		( 1 / base ) : 0;
 }
 
-ST_INLINE void stRect::Set( stRect *rect, const RECT &r ) {
-	rect->a.x = r.right;
-	rect->a.y = r.top;
-	rect->b.x = r.left;
-	rect->b.y = r.bottom;
+ST_INLINE stRect &stRect::FromRECT( const RECT &r ) {
+	a.x = static_cast<f64>( r.right );
+	a.y = static_cast<f64>( r.top );
+	b.x = static_cast<f64>( r.left );
+	b.y = static_cast<f64>( r.bottom );
+	return *this;
 }
 
-ST_INLINE RECT stRect::Get( const stRect &rect ) {
+ST_INLINE RECT stRect::ToRECT() {
 	return RECT{ 
-		static_cast<long>( rect.b.x ), static_cast<long>( rect.a.y ), 
-		static_cast<long>( rect.a.x ), static_cast<long>( rect.b.y ) };
+		static_cast<long>( b.x ), static_cast<long>( a.y ), 
+		static_cast<long>( a.x ), static_cast<long>( b.y ) };
 }
 
 ST_INLINE bool stRect::IsLegal() const {

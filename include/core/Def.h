@@ -101,6 +101,14 @@ typedef uint64_t		un64;
 typedef float			f32;
 typedef double			f64;
 
+/***********************************************************************
+
+    Interface
+
+***********************************************************************/
+#define st_interface( interface_name )				   class interface_name
+#define st_interface_public_inherit( super_interface ) public super_interface
+
 #define st_safe_del( p )		{ if ( p != NULL ) { delete p;	p = NULL; } }
 #define st_safe_del_arr( p )	{ if ( p != NULL ) { delete [] p; p = NULL; } }
 #define st_safe_rel( p )		{ if( p != NULL ) { p->Release(); p = NULL; } }
@@ -114,6 +122,7 @@ typedef double			f64;
 // BOOM
 #define ST_ERR_LEVEL3_UPPER_BOUND	( ( stResult ) -10001 )
 #define ST_NOERR					( ( stResult ) 0	  )
+#define ST_NOERR_INTERNAL			( ( stResult ) 10	  )
 
 /*
 ============

@@ -1,4 +1,4 @@
-﻿/*
+/*
 
 Base class for base type converts.
 

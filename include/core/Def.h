@@ -39,7 +39,7 @@ Base stLib type and macro defines.
 
 #else
 #   define                 _ST_PLATFORM_UNKNOWN
-#   pragma                 message( "Target Compiler:[ UNKNOWN ]" )
+#   pragma                 message( "Target Platform:[ UNKNOWN ]" )
 #endif     /* !_WIN32 */
 
 /***********************************************************************

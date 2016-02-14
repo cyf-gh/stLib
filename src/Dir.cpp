@@ -82,7 +82,7 @@ stDir::Cd
 ============
 */
 stDir &stDir::Cd( const stStrW &lower ) {
-    m_curPath.Append( L"\\" ).Append( lower );
+    m_curPath.Append( lower );
 	return *this;
 }
 
@@ -148,17 +148,20 @@ Ignores '.' and '..' paths.
 void stDir::Ls( std::vector<stStrW> &fileList ) {
 	WIN32_FIND_DATAW  findData;
 	HANDLE			  hFileFind;
+	stStrW			  tmpPath;
+	stStrW			  strPath;
 
+	tmpPath.Append( m_curPath ).Append( L"\\*.*" );
 	st_zero_memory( &findData, sizeof( WIN32_FIND_DATAW ) );
-	if ( FAILED( hFileFind = FindFirstFileW( m_curPath.Data(), &findData ) ) ) {
+	if ( FAILED( hFileFind = FindFirstFileW( tmpPath.Data(), &findData ) ) ) {
 		st_core_return( ST_ERR_LS );
 	}
-	while( FindNextFileW( hFileFind, &findData ) ) {
-		if( wcscmp( findData.cFileName, L"." ) || wcscmp( findData.cFileName, L".." ) ) {
+	do {
+		if( !wcscmp( findData.cFileName, L"." ) || !wcscmp( findData.cFileName, L".." ) ) {
 			continue;
 		}
-		stStrW strPath( m_curPath );
-		strPath.Append( findData.cFileName );
-		fileList.push_back( strPath );
-	}
+		strPath.Clear().Append( m_curPath );
+		strPath.Append( L"\\" ).Append( findData.cFileName );
+		fileList.push_back( strPath.Data() );
+	} while( FindNextFileW( hFileFind, &findData ) );
 }

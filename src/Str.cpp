@@ -38,7 +38,7 @@ stStrMem::NewAndCpyW
 ============
 */
 wchar_t *stStrMem::NewAndCpyW( wchar_t **ppalloc, const wchar_t *cpySrc ) {
-    *ppalloc = st_new<wchar_t>( wcslen( *ppalloc ) + 1 );
+    *ppalloc = st_new<wchar_t>( wcslen( cpySrc ) + 1 );
 
     if ( NULL == *ppalloc ) {
         return NULL;
@@ -133,7 +133,7 @@ wchar_t *stStrMem::ExtendW( wchar_t **ppsrc, un32 newSize ) {
     *ppsrc = st_new<wchar_t>( newSize );
     ZeroMemW( ppsrc );
     wcscpy( *ppsrc, src );
-    SafeDelW( ppsrc );
+    SafeDelW( &src );
     return *ppsrc;
 }
 
@@ -262,8 +262,6 @@ as a result, this method maybe slow because of the memory allocation.
 wchar_t *stStrMem::AToW( wchar_t **ppsrc, const char *targetSrc, const n32 codePage ) {
     const un32 newSize = MultiByteToWideChar( codePage, 0, targetSrc, -1, NULL, 0 );
 
-    SafeDelW( ppsrc );		// prevent memory leak
-    *ppsrc = st_new<wchar_t>( newSize );
     MultiByteToWideChar( codePage, 0, targetSrc, -1, *ppsrc, newSize );
     return *ppsrc;
 }
@@ -278,8 +276,6 @@ stStrMem::WToA
 char *stStrMem::WToA( char **ppsrc, const wchar_t *targetSrc, const n32 codePage ) {
     const un32 newSize = WideCharToMultiByte( codePage, NULL, targetSrc, -1, NULL, 0, NULL, false );
 
-    SafeDelA( ppsrc ); // prevent memory leak
-    *ppsrc = st_new<char>( newSize );
     WideCharToMultiByte( codePage, NULL, targetSrc, -1, *ppsrc, newSize, NULL, false );
     return *ppsrc;
 }

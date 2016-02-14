@@ -15,7 +15,7 @@ class stStrW;
 #ifdef         ST_SWITCH_MEMORYPOOL_ON
 #	include "MemPool.h"
 #elif defined( ST_SWITCH_JEMALLOC_ON )
-#	include "jemalloc.h"
+#	include "../$ref$/jemalloc.h"
 			/* !ST_SWITCH_JEMALLOC_ON */
 #elif defined( ST_SWITCH_MEMORYPOOL_OFF )
 		   /* !ST_SWITCH_MEMORYPOOL_OFF */
@@ -304,20 +304,19 @@ Returns current system API last error.
 
 ***********************************************************************/
 #ifdef		  ST_SWITCH_MT_SAFE_ON
-	stCriticalSection s_globalCS;
 
 	/*
 	============
 	st_atomic
 	============
 	*/
-#	define st_atomic( code ) \
-	s_globalCS.Lock(); \
+#	define st_atomic( code, cs ) \
+	cs.Lock(); \
 	code; \
-	s_globalCS.Unlock()
+	cs.Unlock()
 
 #elif defined( ST_SWITCH_MT_SAFE_OFF )
-#	define st_atomic( code ) \
+#	define st_atomic( code,cs ) \
 	code
 
 		   /* !ST_SWITCH_MT_SAFE_OFF */

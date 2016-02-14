@@ -106,7 +106,7 @@ typedef double			f64;
     Interface
 
 ***********************************************************************/
-#define st_interface( interface_name )				   class interface_name
+#define st_interface( interface_name )				   struct interface_name
 #define st_interface_public_inherit( super_interface ) public super_interface
 
 #define st_safe_del( p )		{ if ( p != NULL ) { delete p;	p = NULL; } }

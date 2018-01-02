@@ -1,9 +1,5 @@
-/*
 
-Base class for file stream and stream helper.  Provides file writing and reading methods.
-
-*/
-
+/// \brief Base class for file stream and stream helper.  Provides file writing and reading methods.
 #ifndef __STLIB_STREAM_H__
 #define __STLIB_STREAM_H__
 
@@ -13,12 +9,10 @@ class stStrW;
 #include "..\core\Def.h"
 #include "..\Enum.h"
 
-/***********************************************************************
+/// \addtogroup base
+/// \{
 
-  Stream
-
-***********************************************************************/
-
+/// \brief Basic stream.
 class stStream {
 
     st_class_no_bin_cpy( stStream )
@@ -90,15 +84,17 @@ public:
 
 class stStreamText : public stStreamHelper {
 protected:
-							stStreamText( const stStreamHelper & );
+								stStreamText( const stStreamHelper & );
 
 public:
-	void					ReadText( const un32 counts, stStrW *ppstr );
-	void					WriteText( const un32 counts, const stStrW &pstr );
-
-							stStreamText( stStream *pparent );
-							stStreamText();
+	void						ReadText( const un32 counts, stStrW *ppstr );
+	void						WriteText( const un32 counts, const stStrW &pstr );
+	static	stStrW*	AddUnicodeBoom( stStrW *pstr );
+								stStreamText( stStream *pparent );
+								stStreamText();
 	virtual					~stStreamText();
 };
+
+/// \}
 
 #endif /* !__STLIB_STREAM_H__ */

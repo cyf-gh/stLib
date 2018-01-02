@@ -1,4 +1,11 @@
-/* This feature was discarded. */
+/**
+ *	This feature was discarded.
+ */
+
+/** \ingroup discard
+ *  \{
+ */
+
 #ifdef ST_SWITCH_MEMORYPOOL_ON
 /*
 
@@ -63,8 +70,8 @@ class stMemCake {
 protected:
 	typedef std::vector<stMemPiece> 		  Pieces;
 
-	stMemPiece &		mergePieces( const nbus srcIndex, const un32 counts );
-	stMemPiece & 		splitPiece( const nbus srcIndex, const un64 prevSize );
+	stMemPiece &		mergePieces( const un32 srcIndex, const un32 counts );
+	stMemPiece & 		splitPiece( const un32 srcIndex, const un64 prevSize );
 
 	Pieces				m_pieces;
 	const un64 			m_size;
@@ -121,3 +128,5 @@ ST_INLINE stMemPool &stMemPool::Instance( const un64 eachCakeSize = ST_MEMPOOL_D
 #endif /* !__STLIB_MEMPOOL_H__ */
 
 #endif /* !ST_SWITCH_MEMORYPOOL_ON */
+
+/** \} */ 

@@ -566,16 +566,18 @@ stStrW::Split
 */
 bool stStrW::Split( const wchar_t key, std::vector<stStrW *> &words ) const {
     const wchar_t   *str = m_pdata;
-    stStrW			word;
+	
+    words.push_back( new stStrW ); // create the first one
 
-    for ( un32 i = 0; i < ( Length() + 1 ); ++i ) {
+    for ( un32 i = 0, wordNum = 0; i < ( Length() + 1 ); ++i ) {
         if ( *str == key ) {
-            words.push_back( st_new_class<stStrW>( stStrW( word.Data() ) ) );
+			++wordNum;
+            words.push_back( new stStrW );
         } else {
-            word.Append( &( *str ) );
-            ++str;
+            words.at(wordNum)->Append( *str );
         }
-    }
+        ++str;
+	}
     return words.size();
 }
 

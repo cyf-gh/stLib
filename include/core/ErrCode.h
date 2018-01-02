@@ -1,31 +1,23 @@
-/*
 
-Defines internal error codes.
-
-*/
+/// \brief Defines internal error codes.
 #ifndef __STLIB_ERRCODE_H__
 #define __STLIB_ERRCODE_H__
 
 namespace stLibErrCode {
 
-/***********************************************************************
+/// \addtogroup errcode Error Codes
+/// \{
 
-  Stom global errors.
-  [ -1, -10 ]
-
-***********************************************************************/
+///\brief Stom global errors. \n
+///		  [ -1, -10 ]
 enum GLOBAL {
 	ST_ERR_UNKNOWN				= -1,
 	ST_ERR_NOTFOUND				= -2,
 	ST_ERR_INVALIDPARAM			= -3
 };
 
-/***********************************************************************
-
-  IO Steam errors.
-  [ -11, -28 ]
-
-***********************************************************************/
+///\brief IO Steam errors.
+///		  [ -11, -28 ]
 enum STREAMERRS {
 	ST_ERR_UNKNOWNOPENMODE 		= -11,
 	ST_ERR_NULLFILEHANDLE 		= -12,
@@ -47,12 +39,8 @@ enum STREAMERRS {
 	ST_ERR_WRITETEXT 			= -28
 }; 
 
-/***********************************************************************
-
-  Directory errors.
-  [ -29, -32 ]
-
-***********************************************************************/
+///\brief  Directory errors.
+///		   [ -29, -32 ]
 enum DIRERRS {
 	ST_ERR_LS 					= -29,
 	ST_ERR_MKDIR 				= -30,
@@ -62,12 +50,15 @@ enum DIRERRS {
 
 #ifdef ST_SWITCH_MEMORYPOOL_ON
 
+///\brief  Memory pool errors.
+///		   {-33}
 enum MEMORYPOOLERRS {
 	ST_ERR_FREEANONBELONGNINGMEM = -33
 };
 
 #endif /* !ST_SWITCH_MEMORYPOOL_ON */
 
+/// \}
 
 } /* stLibErrCode */
 

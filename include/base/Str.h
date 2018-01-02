@@ -1,9 +1,5 @@
-/*
 
-Base class for strings.  Provides useful methods for strings.
-
-*/
-
+/// \brief Base class for strings.  Provides useful methods for strings.
 #ifndef __STLIB_STRING_H__
 #define __STLIB_STRING_H__
 
@@ -11,12 +7,10 @@ Base class for strings.  Provides useful methods for strings.
 #include "..\core\Def.h"
 #include "..\Enum.h"
 
-/***********************************************************************
+/// \defgroup base Stuff Base
+/// \{
 
-  stStr
-
-***********************************************************************/
-
+/// \brief Mmeory string operations
 class stStrMem {
 
 	friend class stStrW;
@@ -47,13 +41,19 @@ public:
 	char *				ExtendA( char **ppsrc, un32 newSize );
 	void				SafeDelA( char **ppsrc );
 
+	/// \brief Converts ASCI to Unicode. 
+	/// \note  Unicode string pointer should be NULL, or it will be deleted,
+	///		   as a result, this method maybe slow because of the memory allocation.
 	wchar_t *			AToW( wchar_t **ppsrc, const char *targetSrc, const n32 codePage = 0 );
+	
+	/// \see   AToW
 	char *				WToA( char **ppsrc, const wchar_t *targetSrc, const n32 codePage = 0 );
 
 						stStrMem()  { }
 	virtual				~stStrMem() { }
 };
 
+/// \brief Unicode string.
 class stStrW {
 
     st_class_no_bin_cpy( stStrW )
@@ -97,6 +97,8 @@ public:
 	virtual				~stStrW();
 };
 
+/// \brief ASCI string.
+/// \see   stStrW
 class stStrA {
 
     st_class_no_bin_cpy( stStrW )
@@ -139,14 +141,7 @@ public:
 	virtual				~stStrA();
 };
 
-/***********************************************************************
-
-  stConstStr
-
-  should use const member only,  or a memory error will occur.
-
-***********************************************************************/
-
+/// \note should use const member only,  or a memory error will occur.
 class stConstStrW : public stStrW {
 private:
 						stConstStrW();
@@ -154,11 +149,13 @@ public:
                         stConstStrW( wchar_t *kStr ) : stStrW( NULL ) { m_pdata = kStr; }
 };
 
+/// \see stConstStrW
 class stConstStrA : public stStrA {
 private:
 						stConstStrA();
 public:
                         stConstStrA( char *kStr ) : stStrA( NULL ) { m_pdata = kStr; }
 };
+/// \}
 
 #endif /* !__STLIB_STRING_H__ */

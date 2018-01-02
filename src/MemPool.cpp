@@ -154,7 +154,7 @@ stMemCake::~stMemCake() { }
 stMemCake::mergePieces
 ============
 */
-stMemPiece &stMemCake::mergePieces( const nbus srcIndex, const un32 counts ) {
+stMemPiece &stMemCake::mergePieces( const un32 srcIndex, const un32 counts ) {
 	stMemPiece *phead = &m_pieces[srcIndex];
 
 	for ( un32 i = 0; i < counts - 1; ++i ) {
@@ -169,7 +169,7 @@ stMemPiece &stMemCake::mergePieces( const nbus srcIndex, const un32 counts ) {
 stMemCake::splitPiece
 ============
 */
-stMemPiece &stMemCake::splitPiece( const nbus srcIndex, const un64 prevSize ) {
+stMemPiece &stMemCake::splitPiece( const un32 srcIndex, const un64 prevSize ) {
 	stMemPiece fontPiece( stMemPiece::Split( m_pieces[srcIndex], prevSize ) );
 
 	m_pieces.insert( m_pieces.begin() + srcIndex, fontPiece );
@@ -185,7 +185,7 @@ un64 stMemCake::GetRestMax() {
 	un64 refundedMax   = 0;
 	un64 piecesSize    = 0;
 
-	for ( nbus i = 0; i < m_pieces.size(); ++i ) {
+	for ( un32 i = 0; i < m_pieces.size(); ++i ) {
 		if ( ! m_pieces[i].Available() ) {
 			refundedMax = ST_MAX( m_pieces[i].Size(), refundedMax );
 		}
@@ -202,7 +202,7 @@ stMemCake::UseRefunded
 void *stMemCake::UseRefunded( const un64 neededSize ) {
     stMemPiece *piece   = NULL;
 
-	for ( nbus i = 0; i < m_pieces.size(); ++i ) {
+	for ( un32 i = 0; i < m_pieces.size(); ++i ) {
 		piece = &m_pieces[i];
 
 		if ( piece->Available() ) {
@@ -243,7 +243,7 @@ stMemCake::Refund
 ============
 */
 bool stMemCake::Refund( const void *phead ) {
-	for ( nbus i = 0; i < m_pieces.size(); ++i ) {
+	for ( un32 i = 0; i < m_pieces.size(); ++i ) {
 		if ( m_pieces[i].Head() == phead ) {
 			m_pieces[i].Refund().Clear();
 			return true;
@@ -292,7 +292,7 @@ void *stMemPool::Alloc( const un64 size ) {
         return pmem;
     }
     // try use previous cakes' refunded space
-	for ( nbus i = 0; i < m_cakes.size() - 1; ++i ) {
+	for ( un32 i = 0; i < m_cakes.size() - 1; ++i ) {
 		void * pmem = m_cakes[i].UseRefunded( size );
 		if ( pmem != NULL ) {
             return pmem;
@@ -307,14 +307,14 @@ stMemPool::Free
 ============
 */
 void stMemPool::Free( void *pmem ) {
-    for ( nbus i = 0; i < m_bigMems.size(); ++i ) {
+    for ( un32 i = 0; i < m_bigMems.size(); ++i ) {
 		if ( m_bigMems[i] == pmem ) {
 			free( pmem );
 			m_bigMems.erase( m_bigMems.begin() + i );
 			return;
 		}
 	}
-	for ( nbus i = 0; i < m_cakes.size(); ++i ) {
+	for ( un32 i = 0; i < m_cakes.size(); ++i ) {
 		if( true == m_cakes[i].Refund( pmem ) ) {
 			return;
 		}

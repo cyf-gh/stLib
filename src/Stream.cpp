@@ -30,7 +30,9 @@ stStream::~stStream
 ============
 */
 stStream::~stStream() {
-	Close();
+	if ( m_pfile != NULL ) {
+		Close();
+	}
 }
 
 /*
@@ -167,7 +169,7 @@ void stStream::SaveAs( const stStrW &newPath ) {
 		st_core_return( ST_ERR_CREATECLONEFILE );
 	}
 	MoveHead();
-	for( nbus i = 0; i < Size(); ++i ) { 
+	for( un32 i = 0; i < Size(); ++i ) { 
 		c = fgetc( m_pfile );
         fputc( c, pnew );
     }
@@ -269,9 +271,9 @@ void stStreamBinary::WriteBytes( const un32 counts, byte8 *data ) {
 	if ( ST_WRITE_BINARY != hstream()->Mode() ) {
 		st_core_return( ST_ERR_UNABLEWRITE );
 	}
-	if ( counts > hstream()->Size() ) {
-		st_core_return( ST_ERR_OUTOFSIZE );
-	}
+	//if ( counts > hstream()->Size() ) {
+	//	st_core_return( ST_ERR_OUTOFSIZE );
+	//}
 	if ( ! data ) {
 		st_core_return( ST_ERR_NULLDATAPARAM );
 	}
@@ -367,4 +369,8 @@ void stStreamText::WriteText( const un32 counts, const stStrW &str ) {
 		st_core_return( ST_ERR_WRITETEXT );
 	}
 	st_core_return( ST_NOERR );
+}
+
+stStrW *stStreamText::AddUnicodeBoom( stStrW * pstr ) {
+	return &pstr->Insert( 0, L"\uFEFF" );
 }

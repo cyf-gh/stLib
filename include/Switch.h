@@ -1,8 +1,4 @@
-/*
-
-stLib feature switches.
-
-*/
+/// \brief stLib feature switches.
 #ifndef __STLIB_SWITCH_H__
 #define __STLIB_SWITCH_H__
 
@@ -12,11 +8,14 @@ stLib feature switches.
     Switches
 
 ***********************************************************************/
-   #define                 ST_SWITCH_JEMALLOC_ON		// use jemalloc memory management
-// #define				   ST_SWITCH_MEMORYPOOL_ON		// use stLib memory pool memory management
-// #define				   ST_SWITCH_MEMORYPOOL_OFF		// use general memory management
+   #define                 ST_SWITCH_JEMALLOC_ON		/// use jemalloc memory management
+// #define				   ST_SWITCH_MEMORYPOOL_ON		/// use stLib memory pool memory management
+// #define				   ST_SWITCH_MEMORYPOOL_OFF		/// use general memory management
 
-   #define				   ST_SWITCH_MT_SAFE_ON			// use multi-thread safely operations
-// #define				   ST_SWITCH_MT_SAFE_OFF		// use no multi-thread safely operations
+   #define				   ST_SWITCH_MT_SAFE_ON			/// use multi-thread safely operations
+// #define				   ST_SWITCH_MT_SAFE_OFF		/// use no multi-thread safely operations
+   
+	#define				   ST_SWITCH_ISDEBUGMODE_ON		/// turn on debug mode
+// #define				   ST_SWITCH_ISDEBUGMODE_OFF	/// turn off debug mode
 
 #endif /* !__STLIB_SWITCH_H__ */

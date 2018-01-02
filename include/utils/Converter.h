@@ -20,14 +20,17 @@ namespace stLibUtils {
 
 class stConverter {	
 public:
-	static n32			aTon32( const char *str );
-	static n64			aTon64( const char *str );
-	static f64			aTof64( const char *str );
 	static n32			wTon32( const wchar_t *str );
 	static n64			wTon64( const wchar_t *str );
 	static f64			wTof64( const wchar_t *str  );
 	static wchar_t *	ToStringW( wchar_t *str, const f64 digit );
+	static wchar_t *	ToStringW( wchar_t *str, const n32 digit );
+
+	static n32			aTon32( const char *str );
+	static n64			aTon64( const char *str );
+	static f64			aTof64( const char *str );
 	static char *		ToString( char *str, const f64 digit );
+	static char *		ToString( char *str, const n32 digit );
 };
 
 ST_INLINE n32 stConverter::aTon32( const char *str ) {
@@ -59,8 +62,18 @@ ST_INLINE wchar_t *stConverter::ToStringW( wchar_t *str, const f64 digit ) {
 	return str;
 }
 
+ST_INLINE wchar_t *stConverter::ToStringW( wchar_t *str, const n32 digit ) {
+	swprintf( str, L"%d", digit );
+	return str;	
+}
+
 ST_INLINE char *stConverter::ToString( char *str, const f64 digit ) {
 	sprintf( str, "%lf", digit );
+	return str;
+}
+
+ST_INLINE char *stConverter::ToString( char *str, const n32 digit ) {
+		sprintf( str, "%d", digit );	
 	return str;
 }
 

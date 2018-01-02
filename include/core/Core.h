@@ -1,9 +1,5 @@
-/*
 
-Provides core error record of stLib.
-
-*/
-
+/// \brief The core components.
 #ifndef __STLIB_CORE_H__
 #define __STLIB_CORE_H__
 
@@ -30,136 +26,106 @@ class stStrW;
 
 namespace stLibCore {
 
-/***********************************************************************
+/// \see st_sys_heap_memory_size
+un32 HeapSize( void *memory );
 
-  stCore
+/// \see st_check_null_ptr
+void CheckPtrNull( void *memory );
 
-***********************************************************************/
+/// \see st_core_return \n
+///		 st_core_return_with_var
+void CoreReturn( const stResult returnCode );
 
-class stCore {
+/// \see st_core_discard
+void CoreDiscard( const stResult curStatus, const char *newFunctionName );
 
-	class stFunctionControl;
-	class stCurLocDesc;
+/// \see st_last_err
+stResult LastErrCode();
 
-private:
-								stCore();
-								stCore( const stCore & );
-								~stCore() { }
+/// \see st_sys_last_err_desc
+stStrW SysLastErrDesc();
 
-public:
-	static stFunctionControl *	m_controller;
-	static stCurLocDesc	*		m_desc;
+static bool s_IsDebugMode = true; // discarded
 
-	static un32					HeapSize( void *memory );
-	static void					CheckPtrNull( void *memory );
+static char	s_curLocDesc[ 2048 ];  // info description string.
 
-	static void					CoreReturn( const stResult returnCode );
-	static void					CoreDiscard( const stResult curStatus, const char *newFunctionName );
+} /* stLibCore */
 
-	static stResult				LastErrCode();
 
-	static stStrW				SysLastErrDesc();
-};
+/// \defgroup coremacros Macros Core Operation 
+/// \brief Macros related to base code. 
+/// \{
 
-/***********************************************************************
-
-  Common
-
-***********************************************************************/
-
-#ifdef		_ST_DEBUG
-#	pragma message( "Target Switch:[ stLib DETAILED INFO ] : ON" )
-	static char					s_curLocDesc[ 2048 ];  // info description string.
-
-	/*
-	============
-	st_sys_record_cur_loc_desc
-
-	Records the current code location detail.
-	============
-	*/
-	#define st_sys_record_cur_loc_desc() \
+#ifdef         ST_SWITCH_ISDEBUGMODE_ON
+/// \brief Records current error descriptions.
+/// \note  Switches by s_IsDebugMode.
+#	define st_sys_record_cur_loc_desc() \
+	if ( stLibCore::s_IsDebugMode ) { \
 		st_zero_memory( stLibCore::s_curLocDesc, 1 ); \
 		sprintf( \
 			stLibCore::s_curLocDesc, \
 			"FILE: %s\nFUNCTION NAME: %s\nLINE: %d\nDATE: %s\nTIME: %s\n", \
-			__FILE__, __FUNCTION__, __LINE__, __DATE__, __TIME__ )
+			__FILE__, __FUNCTION__, __LINE__, __DATE__, __TIME__ ); \
+	}
+#elif defined( ST_SWITCH_ISDEBUGMODE_OFF )
+/// \brief Records current error descriptions.
+/// \note  Switches by s_IsDebugMode.
+#	define st_sys_record_cur_loc_desc()
+// to do nothing
+#endif
 
-#else	/* !_ST_DEBUG */
-#	pragma message( "Target Switch:[ ERROR INFO ] : OFF" )
-	static char					s_curLocDesc[ 1 ];  // info description string.
-
-#	define st_sys_record_cur_loc_desc();
-
-#endif  /* !_ST_RELEASE */
-
-/*
-============
-st_check_null_ptr
-============
-*/
+/// \brief		Check if the pointer points to NULL.
+/// \param[in]	memory Memory pointer.
 #define st_check_null_ptr( memory ) \
-	st_sys_record_cur_loc_desc(); \
-	stLibCore::stCore::CheckPtrNull( memory )
-/*
-============
-st_core_return
-============
-*/
+	st_sys_record_cur_loc_desc() \
+	stLibCore::CheckPtrNull( memory )
+
+/// \brief		Function returns with a var.
+/// \note		Used by non void functions.
+/// \param[in]	function_return_code Error code of function.
+/// \param[in]	var_to_return		 Returned var of function.
 #define st_core_return_with_var( function_return_code, var_to_return ) \
-	st_sys_record_cur_loc_desc(); \
-	stLibCore::stCore::CoreReturn( function_return_code ); \
+	st_sys_record_cur_loc_desc() \
+	stLibCore::CoreReturn( function_return_code ); \
 	return var_to_return
 
+/// \brief		Function returns with nothing.
+/// \note		Used by void functions.
+/// \param[in]	function_return_code Error code of function.
 #define st_core_return( function_return_code )  \
-	st_sys_record_cur_loc_desc(); \
-	stLibCore::stCore::CoreReturn( function_return_code ); \
+	st_sys_record_cur_loc_desc() \
+	stLibCore::CoreReturn( function_return_code ); \
 	return
-/*
-============
-st_core_discard
-============
-*/
+
+/// \brief		Function returns with nothing.
+/// \note		Used by void functions.
+/// \param[in]	function_return_code Error code of function.
 #define st_core_discard( current_status, new_function_name ) \
-	st_sys_record_cur_loc_desc(); \
-	return stLibCore::stCore::CoreDiscard( current_status, new_function_name )
-/*
-============
-st_last_err
-============
-*/
+	st_sys_record_cur_loc_desc() \
+	return stLibCore::CoreDiscard( current_status, new_function_name )
+
+/// \brief		Function returns with nothing.
+/// \note		Used by void functions.
+/// \param[in]	function_return_code Error code of function.
 #define st_last_err()  \
-	stLibCore::stCore::LastErrCode()
-/*
-============
-st_sys_last_err_desc
+	stLibCore::LastErrCode()
 
-Returns current system API last error.
-============
-*/
+/// \brief Get last error description of system API
+/// \note  WIN32 supports only so far.
 #define st_sys_last_err_desc() \
-	stLibCore::stCore::SysLastErrDesc()
-
-/***********************************************************************
-
-  Memory pool
-
-***********************************************************************/
+	stLibCore::SysLastErrDesc()
 
 #ifdef         ST_SWITCH_MEMORYPOOL_ON
 
 #	pragma message( "Target Switch:[ MEMORY POOL ] : ON" )
 #	error "stLib memory pool has been discarded."
-	/*
-	============
-	st_sys_heap_memory_size
-
-	Returns a size of heap memory points to.  Others will cause a error.
-	============
-	*/
+	/// \brief Gets a size of heap memory points to.  Others will cause a error.
+	/// \param[in] memory Heap memory.
 #	define st_sys_heap_memory_size( memory ) \
 		stLibCore::stCore::HeapSize( memory )
 
+	/// \brief  Get memory alloced by assigned method.
+	/// \tparam new
 	template<typename T>
 	ST_INLINE static T *st_new( un64 objNum ) {
 		return ( T* )( stMemPool::Instance().Alloc( objNum * sizeof( T ) ) );
@@ -206,16 +172,13 @@ Returns current system API last error.
 	extern "C" __declspec( dllexport ) size_t	je_malloc_usable_size(
 	JEMALLOC_USABLE_SIZE_CONST void	*ptr);
 
-	/*
-	============
-	st_sys_heap_memory_size
-
-	Returns a size of jemalloced heap memory points to.
-	============
-	*/
+	/// \brief Gets a size of heap memory points to.  Others will cause a error.
+	/// \param[in] memory Heap memory.
 #	define st_sys_heap_memory_size( memory ) \
-		stLibCore::je_malloc_usable_size( memory )
+		je_malloc_usable_size( memory )
 
+	/// \brief  Get memory alloced by assigned method.
+	/// \tparam new
 	template<typename T>
 	ST_INLINE static T *st_new( un64 objNum ) {
 		return ( T * )je_malloc( objNum * sizeof( T ) );
@@ -252,16 +215,13 @@ Returns current system API last error.
 #elif defined( ST_SWITCH_MEMORYPOOL_OFF )
 #	pragma message( "Target Switch:[ MEMORY POOL ] : OFF" )
 
-	/*
-	============
-	st_sys_heap_memory_size
-
-	Returns a size of heap memory points to.  Others will cause a error.
-	============
-	*/
+	/// \brief Gets a size of heap memory points to.  Others will cause a error.
+	/// \param[in] memory Heap memory.
 #	define st_sys_heap_memory_size( memory ) \
 		stLibCore::stCore::HeapSize( memory )
 
+	/// \brief  Get memory alloced by assigned method.
+	/// \tparam new
 	template<typename T>
 	ST_INLINE static T *st_new( un64 objNum ) {
 		return new T[ objNum ];
@@ -298,30 +258,30 @@ Returns current system API last error.
 
 #endif     /* !ST_SWITCH_MEMORYPOOL_ON */
 
-/***********************************************************************
 
-  MT Safe
-
-***********************************************************************/
 #ifdef		  ST_SWITCH_MT_SAFE_ON
 
-	/*
-	============
-	st_atomic
-	============
-	*/
+	/// \brief Lock code block quickly.
+	/// \param[in] code Your code which is needed to be locked.
+	/// \param[in] cs   Critical Section
+	/// \see stCriticalSection
 #	define st_atomic( code, cs ) \
 	cs.Lock(); \
 	code; \
 	cs.Unlock()
 
 #elif defined( ST_SWITCH_MT_SAFE_OFF )
+	/// \brief Lock code block quickly.
+	/// \param[in] code Your code which is needed to be locked.
+	/// \param[in] cs   Critical Section
+	/// \see stCriticalSection
 #	define st_atomic( code,cs ) \
 	code
 
 		   /* !ST_SWITCH_MT_SAFE_OFF */
 #endif     /* !ST_SWITCH_MT_SAFE_ON */
 
-} /* stLibCore */
+/// \}
+
 
 #endif /* !__STLIB_CORE_H__ */

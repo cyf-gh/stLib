@@ -6,15 +6,7 @@
 using namespace stLibCore;
 using namespace stLibUtils::Maths;
 
-/*
-==============================================================
-
-	stCore
-
-==============================================================
-*/
-
-
+static stResult s_lastErr = 0;
 /*
 ==============================================================
 
@@ -22,42 +14,18 @@ using namespace stLibUtils::Maths;
 
 ==============================================================
 */
-
-class stCore::stFunctionControl {
-
-	friend class stCore;
-
-private:
-	stResult		m_lastErr;
-
-public:
-	void			Discard( const stResult curStatus, const char *newFunctionName );
-	void *			Return( const stResult returnCode, void **ppvarToReturn = NULL );
-
-					stFunctionControl() : m_lastErr( ST_NOERR ) { }
-					~stFunctionControl() { };
-};
+void			Discard( const stResult curStatus, const char *newFunctionName );
+void *			Return( const stResult returnCode, void **ppvarToReturn = NULL );
 
 /*
 ============
-stCore::m_controller
+Return
 ============
 */
-stCore::stFunctionControl *stCore::m_controller = new stCore::stFunctionControl();
-
-/*
-============
-stCore::stFunctionControl::Return
-============
-*/
-void *stCore::stFunctionControl::Return( const stResult code, void **ppvar ) {
-	m_lastErr = code;
-	if( IsIn( ST_ERR_LEVEL1_UPPER_BOUND, ST_ERR_LEVEL2_UPPER_BOUND, code ) ) {
-		printf( "%s", s_curLocDesc );
-		return NULL;
-	} else if( IsIn( ST_ERR_LEVEL3_UPPER_BOUND, ST_ERR_LEVEL2_UPPER_BOUND, code ) ) {
+void *Return( const stResult code, void **ppvar ) {
+	s_lastErr = code;
+	if( code < 0 ) {
 		throw s_curLocDesc;
-		return NULL;
 	} else {
 		// no error occurs.
 		return ( ppvar == NULL ) ? NULL : *ppvar;
@@ -66,10 +34,10 @@ void *stCore::stFunctionControl::Return( const stResult code, void **ppvar ) {
 
 /*
 ============
-stCore::stFunctionControl::Discard
+Discard
 ============
 */
-void stCore::stFunctionControl::Discard( const stResult curStatus, const char *name ) {
+void Discard( const stResult curStatus, const char *name ) {
 	printf( "FUNCTION[ %s ] has been discarded in current version", name );
 	throw s_curLocDesc;
 }
@@ -84,10 +52,10 @@ void stCore::stFunctionControl::Discard( const stResult curStatus, const char *n
 
 /*
 ============
-stCore::HeapSize
+HeapSize
 ============
 */
-un32 stCore::HeapSize( void *memory ) {
+un32 stLibCore::HeapSize( void *memory ) {
 	un32 memorySize = 0;
 
 #ifdef _ST_DEBUG
@@ -101,7 +69,6 @@ un32 stCore::HeapSize( void *memory ) {
 			throw "Failed to get size of memory which memory points to.";
 		}
 	}
-
 #else /* !_ST_RELEASE */
 
 	memorySize = _msize( memory );
@@ -113,10 +80,10 @@ un32 stCore::HeapSize( void *memory ) {
 
 /*
 ============
-stCore::CheckPtrNull
+CheckPtrNull
 ============
 */
-void stCore::CheckPtrNull( void *memory ) {
+void stLibCore::CheckPtrNull( void *memory ) {
 	if ( NULL == memory ) {
 		throw s_curLocDesc;
 	}
@@ -124,37 +91,37 @@ void stCore::CheckPtrNull( void *memory ) {
 
 /*
 ============
-stCore::CoreReturn
+CoreReturn
 ============
 */
-void stCore::CoreReturn( const stResult code ) {
-	m_controller->Return( code, NULL );
+void stLibCore::CoreReturn( const stResult code ) {
+	Return( code );
 }
 
 /*
 ============
-stCore::CoreDiscard
+CoreDiscard
 ============
 */
-void stCore::CoreDiscard( const stResult curStatus, const char *name ) {
-	m_controller->Discard( curStatus, name );
+void stLibCore::CoreDiscard( const stResult curStatus, const char *name ) {
+	Discard( curStatus, name );
 }
 
 /*
 ============
-stCore::LastErrCode
+LastErrCode
 ============
 */
-stResult stCore::LastErrCode() {
-	return m_controller->m_lastErr;
+stResult stLibCore::LastErrCode() {
+	return s_lastErr;
 }
 
 /*
 ============
-stCore::SysLastErrDesc
+SysLastErrDesc
 ============
 */
-stStrW stCore::SysLastErrDesc() {
+stStrW stLibCore::SysLastErrDesc() {
 	stStrW	desc;
 
 #ifdef _ST_PLATFORM_WIN32

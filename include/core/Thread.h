@@ -1,19 +1,14 @@
-/*
 
-Provides thread features.
-
-*/
+/// \brief Provides thread features.
 #ifndef __STLIB_THREAD_H__
 #define __STLIB_THREAD_H__
 
 #include "Def.h"
 
-/***********************************************************************
+/// \addtogroup base
+/// \{
 
-  stThread
-
-***********************************************************************/
-
+/// \brief Thread
 class stThread {
 private:
 	HANDLE              m_thread;
@@ -38,12 +33,7 @@ public:
 						~stThread();
 };
 
-/***********************************************************************
-
-  stCriticalSection
-
-***********************************************************************/
-
+/// \brief Critical section
 class stCriticalSection {
 private:
     CRITICAL_SECTION    m_section;
@@ -56,5 +46,7 @@ public:
                         stCriticalSection();
                         ~stCriticalSection();
 };
+
+/// \}
 
 #endif // THREAD_H_INCLUDED

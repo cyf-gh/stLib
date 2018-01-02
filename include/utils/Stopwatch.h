@@ -1,11 +1,6 @@
-/*
 
-Base stop watch class.  Provides high-precision stop watch.
-
-Quote : "https://github.com/9chu/fancy2d/blob/master/fancylib/fcyMisc/fcyRandom.h"
-
-*/
-
+/// \brief Base stop watch class.  Provides high-precision stop watch.
+/// \quote https://github.com/9chu/fancy2d/blob/master/fancylib/fcyMisc/fcyRandom.h
 #ifndef __STLIB_STOPWATCH_H__
 #define __STLIB_STOPWATCH_H__
 
@@ -13,11 +8,8 @@ Quote : "https://github.com/9chu/fancy2d/blob/master/fancylib/fcyMisc/fcyRandom.
 
 namespace stLibUtils {
 
-/***********************************************************************
-
-  StopWatch
-
-***********************************************************************/
+/// \defgroup utils Stuff Utilities
+/// \{
 
 class stStopWatch {
 private:
@@ -36,7 +28,7 @@ public:
 								stStopWatch();
 								~stStopWatch();
 };
-
+/// \}
 } /* stLibUtils */
 
 #endif /* !__STLIB_STOPWATCH_H__ */

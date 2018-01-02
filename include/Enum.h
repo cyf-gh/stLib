@@ -1,9 +1,5 @@
-/*
 
-Defines stLib Enum.
-
-*/
-
+/// \brief The enumerations of stLib.
 #ifndef __STLIB_ENUM_H__
 #define __STLIB_ENUM_H__
 
@@ -11,11 +7,10 @@ Defines stLib Enum.
 
 namespace stLibEnum {
 
-/***********************************************************************
+/// \addtogroup Enumerations
+/// \{
 
-	File open modes
-
-***********************************************************************/
+/// \brief File open modes.
 enum FILEOPENMODE {
 	ST_NOMODE				= 0,
 	// Binary
@@ -36,27 +31,21 @@ enum FILEOPENMODE {
 	ST_CREATE_UTF8			= 12
 };
 
-/***********************************************************************
-
-	File positions
-
-***********************************************************************/
+/// \brief File positions.
 enum FILEPOSITIONORG {
 	ST_CUR					= SEEK_CUR,
 	ST_END					= SEEK_END,
 	ST_HEAD					= SEEK_SET
 };
 
-/***********************************************************************
-
-	String trim modes
-
-***********************************************************************/
+/// \brief String trim modes.
 enum TRIMMODE {
 	TM_BOTH_SIDE,
 	TM_LEFT,
 	TM_RIGHT
 };
+
+/// \}
 
 } /* stLibEnum */
 

@@ -1,21 +1,13 @@
-/*
-
-Base class and methods for maths.  Provides 2D vector class, rectangle class.
-
-*/
-
+/// \brief Base class and methods for maths.  Provides 2D vector class, rectangle class.
 #ifndef __STLIB_MATHS_H__
 #define __STLIB_MATHS_H__
 
 #include <math.h>
 #include "..\core\Def.h"
 
-/***********************************************************************
-
-  Maths
-
-***********************************************************************/
-
+/// \defgroup maths Stuff Maths
+/// \brief Mathematical operations.
+/// \{
 #ifndef _ST_PLATFORM_WIN32
 typedef struct _RECT {
 	n32		left;
@@ -29,59 +21,98 @@ namespace stLibUtils {
 
 namespace Maths {
 
-static const f32 ST_PI = 3.141592654f;
+static const f32 ST_PI = 3.141592654f; ///< \brief Circumference ratio.
 
-/***********************************************************************
-
-  Mathematical operations
-
-***********************************************************************/
-
+/// \brief		Gets bigger one.
+/// \param num1 Number1.
+/// \param num2 Number2.
 #define ST_MAX( num1, num2 ) num1 > num2 ? num1 : num2
+
+/// \brief		Gets smaller one.
+/// \param num1 Number1.
+/// \param num2 Number2.
 #define ST_MIN( num1, num2 ) num1 > num2 ? num2 : num1
 
+/// \brief			Checks whether two double number is equal.
+/// \note			The offset is 0.000001.
+/// \param[in] num1 Number1.
+/// \param[in] num2 Number2.
+/// \return			Is two double number equal.
 static ST_INLINE bool IsEqualF( f64 num1, f64 num2 ) {
 	return fabs( num1 - num2 ) < 0.000001;
 }
 
+/// \brief			  Is a number in the range.
+/// \param[in] numMin Left.
+/// \param[in] numMax Right.
+/// \param[in] numCmp Number to compare.
+/// \return			  Is numCmp in range.
 static ST_INLINE bool IsIn( f64 numMin, f64 numMax, f64 numCmp ) {
 	return ( ( numCmp >= numMin ) && ( numMax <= numCmp ) );
 }
 
+/// \brief	   Is a number positive.
+/// \param[in] dNum Number to check.
+/// \return	   Is dNum positive.
 static ST_INLINE bool IsPositive( f64 dNum ) {
 	return ( dNum > 0 );
 }
 
+/// \brief			Gets average value of two numbers.
+/// \param[in] num1 Number1.
+/// \param[in] num2 Number2.
+/// \return			Average number.
 static ST_INLINE f64 Avg( f64 num1, f64 num2 ) {
 	return ( num1 + num2 ) / 2;
 }
 
-static ST_INLINE f64 Abs( f64 dNum ) {
-	return dNum > 0 ? dNum : -dNum;
+/// \brief			Get the absolute value.
+/// \param[in]	num Number.
+/// \return			Taken absolute value.
+static ST_INLINE f64 Abs( f64 num ) {
+	return num > 0 ? num : -num;
 }
 
-static ST_INLINE n32 Avg( n32 nNum1, n32 nNum2 ) {
-	return ( nNum1 >> 1 ) + ( nNum2 >> 1 );
+/// \brief			Gets average value of two integer.
+/// \param[in] num1 Number1.
+/// \param[in] num2 Number2.
+/// \return			Average number.
+static ST_INLINE n32 Avg( n32 num1, n32 num2 ) {
+	return ( num1 >> 1 ) + ( num2 >> 1 );
 }
 
-static ST_INLINE n32 Half( n32 nNum ) {
-	return ( nNum >> 1 );
+/// \brief			Gets half of a integer.
+/// \param[in] num	Number.
+/// \return			Taken half number.
+static ST_INLINE n32 Half( n32 num ) {
+	return ( num >> 1 );
 }
 
-static ST_INLINE n32 Twofold( n32 nNum ) {
-	return ( nNum << 1 );
+/// \brief			Gets two fold of a integer.
+/// \param[in] num	Number.
+/// \return			Taken two fold number.
+static ST_INLINE n32 Twofold( n32 num ) {
+	return ( num << 1 );
 }
 
-static ST_INLINE n32 Opposite( n32 nNum ) {
-	return ( ~nNum + 1 );
+/// \brief			Gets opposite number of one.
+/// \param[in] num	Number.
+/// \return			Taken opposite number.
+static ST_INLINE n32 Opposite( n32 num ) {
+	return ( ~num + 1 );
 }
 
-static ST_INLINE n32 Abs( n32 nNum ) {
-	const n32 nTmp = ( nNum >> 31 );
-	return ( ( nNum ^ nTmp ) - nTmp );
+/// \brief			Get the absolute value.
+/// \param[in]	num Number.
+/// \return			Using absolute value.
+static ST_INLINE n32 Abs( n32 num ) {
+	const n32 nTmp = ( num >> 31 );
+	return ( ( num ^ nTmp ) - nTmp );
 }
 
-/* Quote id Software */
+/// \brief Get Inverted sqrt of a digit.
+/// \note  3X faster than the one in C std.
+/// \quote id Software(Copyright)
 static ST_INLINE f32 inv_sqrt( f32 x ) {
 	f32 xhalf = 0.5f * x;
 	int i = * ( int * ) &x;
@@ -91,23 +122,22 @@ static ST_INLINE f32 inv_sqrt( f32 x ) {
 	return x;
 }
 
-/***********************************************************************
-
-  stVec2
-
-***********************************************************************/
-
+/// \brief 2D vector
 class stVec2 {
 
 public:
-	f64				x;
-	f64				y;
+	f64				x;  ///< \brief x
+	f64				y;  ///< \brief y
 
 public:
 	stVec2			UnitVec() const;
 	const f64		Length()  const;
 	bool			IsZero()  const			  { return ( IsEqualF( x, 0 ) && IsEqualF( y, 0 ) ); }
-	stVec2 &	 	Take( f64 dLamda );
+
+	/// \brief			  Vector take operation.
+	/// \param[in] dLamda Lamda.
+	/// \return			  this pointer.
+	stVec2 &Take( f64 dLamda );
 
 	static bool		IsNegative( const stVec2 &v1, const stVec2 &v2 );
 	static bool		IsParallel( const stVec2 &v1, const stVec2 &v2 );
@@ -126,21 +156,16 @@ public:
 	virtual			~stVec2() { }
 };
 
-/***********************************************************************
-
-  stRect
-
-***********************************************************************/
-
+/// \brief Pixel rect.
 class stRect {
 
 public:
-	stVec2			a;		 // right top vector
-	stVec2			b; 		 // left bottom vector
+	stVec2			a;		 ///< \brief right top vector
+	stVec2			b; 		 ///< \brief left bottom vector
 
 public:
 	bool			IsIntersect( const stRect &r, stRect *pOut );
-	bool			IsLegal()					 const;
+	bool			IsLegal()					 const; /// <brief Is the rect exist.
 	bool			IsContain( const stVec2 &v ) const;
 	stVec2			Center()					 const;
 	const f64		Width()						 const { return a.x - b.y; }
@@ -156,8 +181,9 @@ public:
 						: a( x1, y1 ), b( x2, y2 ) { }
 					stRect()
 						: a(), b() { }
-	virtual			~stRect();
+					~stRect() { }
 };
+/// \}
 
 ST_INLINE stVec2 &stVec2::Take( f64 lmd ) {
 	x *= lmd;

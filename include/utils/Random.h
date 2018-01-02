@@ -1,11 +1,7 @@
-/*
 
-Base random number class.
-
-WELL512   Quote "https://github.com/9chu/fancy2d/blob/master/fancylib/fcyMisc/fcyRandom.h".
-Xorshift  Quote  Marsaglia.
-
-*/
+/// \brief Base random number class.
+/// \quote WELL512   Quote https://github.com/9chu/fancy2d/blob/master/fancylib/fcyMisc/fcyRandom.h
+/// \quote Xorshift    Marsaglia.
 #ifndef __STLIB_RANDOM_H__
 #define __STLIB_RANDOM_H__
 
@@ -13,12 +9,8 @@ Xorshift  Quote  Marsaglia.
 
 namespace stLibUtils {
 
-/***********************************************************************
-
-  Random
-
-***********************************************************************/
-
+/// \addtogroup maths
+/// \{
 class Random {
 public:
     virtual un32    GetRandUInt() = 0;
@@ -53,7 +45,7 @@ public:
                     stRandomXORSHIFT();
                     ~stRandomXORSHIFT();
 };
-
+/// \}
 } /* stLibUtils */
 
 #endif /* !__STLIB_RANDOM_H__ */

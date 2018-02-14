@@ -1,4 +1,3 @@
-
 /// \brief Defines internal error codes.
 #ifndef __STLIB_ERRCODE_H__
 #define __STLIB_ERRCODE_H__
@@ -37,6 +36,10 @@ enum STREAMERRS {
 	ST_ERR_WRITEBYTE 			= -26,
 	ST_ERR_READTEXT 			= -27,
 	ST_ERR_WRITETEXT 			= -28
+}; 
+
+enum COREERRS {
+	ST_ERR_ARGUOUTOFRANGE		= -33
 }; 
 
 ///\brief  Directory errors.

@@ -1,8 +1,6 @@
-/*
 
-Base class for base type converts.
+/// \brief 基本的类型转化
 
-*/
 #ifndef __STLIB_CONVERTER_H__
 #define __STLIB_CONVERTER_H__
 

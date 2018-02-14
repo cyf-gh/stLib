@@ -1,4 +1,4 @@
-#include "..\include\core\Thread.h"
+#include "..\include\base\Thread.h"
 
 /*
 ==============================================================

@@ -74,7 +74,7 @@ public:
 	un32				RepTimesOf( const wchar_t key )    const;
 	n32 				Find( const wchar_t key, const un32 times = 0 ) const;
 	n32                 FindBack( const wchar_t key, const un32 times = 0 ) const;
-	bool			    Split( const wchar_t key, std::vector<stStrW *> &words ) const;
+	un32			    Split( const wchar_t key, std::vector<stStrW *> &words ) const;
 
 	stStrW &			Clear();
 	stStrW &			Append( const stStrW &text );
@@ -119,7 +119,7 @@ public:
 	un32 				RepTimesOf( const char key )    const;
 	n32				    Find( const char key, const un32 times = 0 ) const;
 	n32                 FindBack( const char key, const un32 times = 0 ) const;
-	bool			    Split( const char key, std::vector<stStrA *> &words ) const;
+	un32			    Split( const char key, std::vector<stStrA *> &words ) const;
 
 	stStrA &			Clear();
 	stStrA &			Append( const stStrA &text );
@@ -157,5 +157,18 @@ public:
                         stConstStrA( char *kStr ) : stStrA( NULL ) { m_pdata = kStr; }
 };
 /// \}
+
+#ifdef ST_SWITCH_STR_UNICODE
+
+#	define stStrT		stStrW		
+#	define stConstStrT	stConstStrW	
+
+#elif defined( ST_SWITCH_STR_ASCI )
+
+#	define stStrT		stStrA		
+#	define stConstStrT	stConstStrA	
+
+#endif // ¶¨ÒåT×Ö·û
+
 
 #endif /* !__STLIB_STRING_H__ */

@@ -1,26 +1,26 @@
 /**
- *  Platform macros define.
+ *  平台定义
  */
 
 #ifndef __STLIB_PLATFORM_H__
 #define __STLIB_PLATFORM_H__
 
-/** \defgroup platform Macros Platform 
- *  Platform macros.
+/** \defgroup 平台相关宏定义
+ *  平台宏
  *  \{
  */
 
 #ifdef         _WIN32
 #	define                 WIN32_LEAN_AND_MEAN
 #	include <Windows.h>
-/** \brief Target OS Windows 32bit.
+/** \brief 目标32位Windows
  */
 #	define                 _ST_PLATFORM_WIN32
 #	pragma                 message( "Target Platform:[ WINDOWS ]" )
 
 #	ifdef         _WIN64
 
-/** \brief Target OS Windows 64bit.
+/** \brief 目标64位Windows
  */
 #		define                 _ST_PLATFORM_WIN64
 #		pragma                 message( "Target Platform:[ WINDOWSx64 ]" )
@@ -28,7 +28,7 @@
 
 #elif defined( __linux__ )
 
-/** \brief Target OS LINUX.
+/** \brief 目标Linux系统
  */
 #	define                 _ST_PLATFORM_LINUX
 #	pragma                 message( "Target Platform:[ LINUX ]" )
@@ -36,14 +36,14 @@
 
 
 #   elif defined( __APPLE__ )
-/**  \brief Target OS APPLE OSX.
+/**  \brief 目标苹果OSX/macOS系统
  */
 #   define                 _ST_PLATFORM_APPLEOSX
 #   pragma                 message( "Target Platform:[ APPLE OSX ]" )
            /* !__APPLE__ */
 
 #else 
-/**  \brief Target OS UNKNOWN.
+/**  \brief 目标未知系统
  */
 #   define                 _ST_PLATFORM_UNKNOWN
 #   pragma                 message( "Target Compiler:[ UNKNOWN ]" )

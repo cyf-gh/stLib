@@ -45,6 +45,11 @@ enum TRIMMODE {
 	TM_RIGHT
 };
 
+enum CORERETURN {
+	ST_CR_WARNNING,
+	ST_CR_ERROR
+};
+
 /// \}
 
 } /* stLibEnum */

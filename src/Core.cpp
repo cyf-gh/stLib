@@ -1,5 +1,6 @@
 #include <malloc.h>
 #include "..\include\core\Core.h"
+#include "..\include\Enum.h"
 #include "..\include\utils\Maths.h"
 #include "..\include\base\Str.h"
 
@@ -15,17 +16,20 @@ static stResult s_lastErr = 0;
 ==============================================================
 */
 void			Discard( const stResult curStatus, const char *newFunctionName );
-void *			Return( const stResult returnCode, void **ppvarToReturn = NULL );
+void *			Return( const stResult returnCode, stResult ncodeType, void **ppvarToReturn = NULL);
 
 /*
 ============
 Return
 ============
 */
-void *Return( const stResult code, void **ppvar ) {
+void *Return( const stResult code, stResult ncodeType, void **ppvar ) {
 	s_lastErr = code;
 	if( code < 0 ) {
 		throw s_curLocDesc;
+	} else if ( ncodeType == stLibEnum::ST_CR_WARNNING ) {
+		// warnning code can be ignored 
+		return ( ppvar == NULL ) ? NULL : *ppvar;
 	} else {
 		// no error occurs.
 		return ( ppvar == NULL ) ? NULL : *ppvar;
@@ -94,8 +98,12 @@ void stLibCore::CheckPtrNull( void *memory ) {
 CoreReturn
 ============
 */
-void stLibCore::CoreReturn( const stResult code ) {
-	Return( code );
+void stLibCore::CoreReturn( const stResult code, bool iswarnningCode ) {
+	if ( iswarnningCode ) {
+		Return( code, stLibEnum::ST_CR_WARNNING );
+	} else {
+		Return( code, stLibEnum::ST_CR_ERROR );
+	}
 }
 
 /*
@@ -103,7 +111,7 @@ void stLibCore::CoreReturn( const stResult code ) {
 CoreDiscard
 ============
 */
-void stLibCore::CoreDiscard( const stResult curStatus, const char *name ) {
+void stLibCore::CoreDiscard( const stResult curStatus, const ch8 *name ) {
 	Discard( curStatus, name );
 }
 

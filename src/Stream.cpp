@@ -359,7 +359,7 @@ void stStreamText::WriteText( const un32 counts, const stStrW &str ) {
 	if ( ! hstream() ) {
 		st_core_return( ST_ERR_NULLSTREAMHANDLE );
 	}
-	if ( ! ( ( hstream()->Mode() == ST_WRITE_UTF8 ) || ( hstream()->Mode() == ST_WRITE_UNICODE ) ) ) {
+	if ( ! ( ( hstream()->Mode() == ST_WRITE_UTF8 ) || ( hstream()->Mode() == ST_WRITE_UNICODE ) || ( hstream()->Mode() == ST_CREATE_UNICODE ) ) ) {
 		st_core_return( ST_ERR_UNABLEWRITE );
 	}
 	if ( counts > hstream()->Size() ) {
@@ -369,8 +369,4 @@ void stStreamText::WriteText( const un32 counts, const stStrW &str ) {
 		st_core_return( ST_ERR_WRITETEXT );
 	}
 	st_core_return( ST_NOERR );
-}
-
-stStrW *stStreamText::AddUnicodeBoom( stStrW * pstr ) {
-	return &pstr->Insert( 0, L"\uFEFF" );
 }

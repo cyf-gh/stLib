@@ -1,12 +1,12 @@
 /**
- *  Build about macros define.
+ *  项目生成有关的宏定义
  */
 
 #ifndef __STLIB_BUILD_H__
 #define __STLIB_BUILD_H__
 
-/** \defgroup build Macros Build 
- *  Build and compiler related macros.
+/** \defgroup 生成宏定义
+ *  生成与编译器相关的宏定义
  *  \{
  */
 #ifdef         _DEBUG
@@ -28,7 +28,7 @@
 
 #ifdef        _MSC_VER
 
-#	pragma                 warning( disable : 4996 ) // Using unsafe functions.
+#	pragma                 warning( disable : 4996 ) // 使用非安全标准库函数
 #	define                 ST_INLINE  __forceinline
 #	pragma                 message( "Target Compiler:[ MSVC ]" )
 

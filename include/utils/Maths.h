@@ -168,7 +168,7 @@ public:
 	bool			IsLegal()					 const; /// <brief Is the rect exist.
 	bool			IsContain( const stVec2 &v ) const;
 	stVec2			Center()					 const;
-	const f64		Width()						 const { return a.x - b.y; }
+	const f64		Width()						 const { return b.x - a.x; }
 	const f64		Height()					 const { return b.y - a.y; }
 
 	stRect &		FromRECT( const RECT &r );
@@ -234,9 +234,9 @@ ST_INLINE const f64	stVec2::Length() const {
 }
 
 ST_INLINE stRect &stRect::FromRECT( const RECT &r ) {
-	a.x = static_cast<f64>( r.right );
+	a.x = static_cast<f64>( r.left );
 	a.y = static_cast<f64>( r.top );
-	b.x = static_cast<f64>( r.left );
+	b.x = static_cast<f64>( r.right );
 	b.y = static_cast<f64>( r.bottom );
 	return *this;
 }

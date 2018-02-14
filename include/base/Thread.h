@@ -3,7 +3,7 @@
 #ifndef __STLIB_THREAD_H__
 #define __STLIB_THREAD_H__
 
-#include "Def.h"
+#include "..\core\Def.h"
 
 /// \addtogroup base
 /// \{
@@ -14,7 +14,7 @@ private:
 	HANDLE              m_thread;
 	DWORD               m_threadID;
 
-private:
+public:
 	static DWORD WINAPI execute(void* p);
 
 protected:

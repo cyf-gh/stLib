@@ -1,5 +1,5 @@
 /**
- *	Defines base stuff of stLib.  This file should be included at the beginning of the program.
+ *	\breif 定义了基本的stLib事项；该文件必须引用在所有的stLib文件之前
  */
 
 #ifndef __STLIB_DEF_H__
@@ -7,8 +7,8 @@
 
 #include <cstdint>
 
-/** \defgroup basetype Types Base
- *  Base types defined by stLib.
+/** \defgroup 基本类型
+ *  stLib所定义的基本类型
  *  \{
  */
 typedef char			ch8;
@@ -24,25 +24,25 @@ typedef float			f32;
 typedef double			f64;
 /** \} */ 
 
-/** \ingroup coremacros
+/** \ingroup 宏定义
  *  \{
  */
 
-/** \brief		   Set each memory to NULL value.
- *	\param[in] p   Memory pointer.
- *	\param[in] len Length of memory.
+/** \brief		   将每个内存空间置空
+ *	\param[in] p   内存指针
+ *	\param[in] len 内存大小
  */
 #define st_zero_memory( p, len ) \
 	memset( p, 0, len )	
 
-/** \brief		      If took error.
- *	\param[in] result Error code.
+/** \brief		      是否为错误的返回值
+ *	\param[in] result 错误代码
  */
 #define st_do_err( result )	\
 	( ( ( stResult ) ( result ) ) < 0 )
 
-/** \brief		   Release a COM object safely.
- *	\param[in out] COM object pointer.
+/** \brief		   安全释放COM对象
+ *	\param[in out] COM指针
  */
 #define st_safe_rel( p ) \
 if( p != NULL ) { \
@@ -50,8 +50,8 @@ if( p != NULL ) { \
 	p = NULL; \
 }
 
-/** \brief Force a class to be a non-binary copy class.
- *  \param class_name Name of class.
+/** \brief 强制类使其无法进行二进制拷贝
+ *  \param class_name 类名
  */
 #define st_class_no_bin_cpy( class_name ) \
 public: \
@@ -62,21 +62,19 @@ public: \
 #define ST_NOERR				( ( stResult ) 0  )
 #define ST_NOERR_INTERNAL		( ( stResult ) 10 )
 
+/** \brief 不使用stLib自带宏开关定义 */
+#ifndef ST_DEF_DONOTUSESTLIBSWITCH
 #include "..\Switch.h"
+#endif /* !ST_DEF_DONOTUSESTLIBSWITCH */
 
 #include "def\Platform.h"
 #include "def\Build.h"
 
-
-/** \defgroup discard Stuff Discarded
- *  Discarded features.
- *  \{
- */
 #ifdef __cplusplus
 
-/** \brief delete a heap memory which alloced by new.
- *	\note  Discarded. 
- *  \see   st_new_class
+/** \brief 释放单个堆内存
+ *  \see   st_new
+ *		   st_new_class
  */
 #	define st_safe_del( p ) \
 if ( p != NULL ) { \
@@ -84,9 +82,9 @@ if ( p != NULL ) { \
 	p = NULL; \
 }
 
-/** \brief delete a heap memory which alloced by new.
- *	\note  Discarded. 
- *  \see   st_new_class
+/** \brief 释放连续堆内存
+ *  \see   st_delete_class
+ *		   st_delete
  */
 #	define st_safe_del_arr( p ) \
 if ( p != NULL ) { \

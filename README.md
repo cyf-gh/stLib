@@ -2,7 +2,7 @@
 stLib provides you a tiny codebase with C++ 11/14.
 
 ## License
-###WTFPL
+### WTFPL
 
 Do What The Fuck You Want To Public License.
 

@@ -1,10 +1,8 @@
-# stLib
-stLib provides you a tiny codebase with C++ 11/14.
+# stLib is In Developing !
+see Alpha-develop branch.
 
-## License
-###WTFPL
 
-Do What The Fuck You Want To Public License.
+
 
 ## Copyright
 > cyf-gh 2018

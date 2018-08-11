@@ -1,30 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="..\..\src\Core.cpp" />
-    <ClCompile Include="..\..\src\Dir.cpp" />
-    <ClCompile Include="..\..\src\MemPool.cpp" />
-    <ClCompile Include="..\..\src\Random.cpp" />
-    <ClCompile Include="..\..\src\Stopwatch.cpp" />
-    <ClCompile Include="..\..\src\Str.cpp" />
-    <ClCompile Include="..\..\src\Stream.cpp" />
-    <ClCompile Include="..\..\src\Thread.cpp" />
+    <ClInclude Include="..\..\include\stDef.h" />
+    <ClInclude Include="..\..\include\stMem.h" />
+    <ClInclude Include="..\..\include\stString.h" />
+    <ClInclude Include="..\..\include\stMemStr.hpp" />
+    <ClInclude Include="..\..\include\stGeneralConcept.h" />
+    <ClInclude Include="..\..\include\stGenericSupport.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\Enum.h" />
-    <ClInclude Include="..\..\include\core\Core.h" />
-    <ClInclude Include="..\..\include\core\Def.h" />
-    <ClInclude Include="..\..\include\core\ErrCode.h" />
-    <ClInclude Include="..\..\include\core\MemPool.h" />
-    <ClInclude Include="..\..\include\core\Thread.h" />
-    <ClInclude Include="..\..\include\base\Str.h" />
-    <ClInclude Include="..\..\include\base\Stream.h" />
-    <ClInclude Include="..\..\include\utils\Converter.h" />
-    <ClInclude Include="..\..\include\utils\Dir.h" />
-    <ClInclude Include="..\..\include\utils\Maths.h" />
-    <ClInclude Include="..\..\include\utils\Random.h" />
-    <ClInclude Include="..\..\include\utils\Stopwatch.h" />
-    <ClInclude Include="..\..\include\Switch.h" />
-    <ClInclude Include="..\..\include\core\Event.h" />
+    <ClCompile Include="..\..\src\string.cpp" />
   </ItemGroup>
 </Project>

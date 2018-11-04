@@ -7,6 +7,8 @@
 
 #include <cstdint>
 
+#include "stForwardDecls.h"
+
 /** \defgroup basetype Types Base
  *  Basic types defined by stLib.
  *  \{
@@ -24,6 +26,21 @@ typedef float			f32;
 typedef double			f64;
 /** \} */
 
+namespace_stLib {
+
+template<typename type_of_char>
+struct st_result_detail {
+	stResult errCode;
+	const type_of_char *description;
+};
+
+typedef st_result_detail<wchar_t> ST_RESULTW;
+typedef st_result_detail<char> ST_RESULTA;
+
+static const ST_RESULTW g_result_null_w = { -9999, L"" };
+static const ST_RESULTA g_result_null_A = { -9999, "" };
+
+}
 /** \ingroup Basic Macro Functions
  *  \{
  */

@@ -23,7 +23,7 @@ bool stLib::stStr_Dynamic<type_of_char>::IsEqual( const stStr_Dynamic<type_of_ch
 }
 
 template<typename type_of_char>
-bool stLib::stStr_Dynamic<type_of_char>::IsEqual(const stStr_Const<type_of_char>& compare) const {
+bool stLib::stStr_Dynamic<type_of_char>::IsEqual( const stStr_Const<const type_of_char>& compare ) const {
 	return IsEqual( compare.Raw() );
 }
 
@@ -59,7 +59,7 @@ stStr_Dynamic<type_of_char>& stStr_Dynamic<type_of_char>::Append( const stStr_Dy
 }
 
 template<typename type_of_char>
-stStr_Dynamic<type_of_char>& stLib::stStr_Dynamic<type_of_char>::Append( const stStr_Const<type_of_char>& text, const un length = 0 ) {
+stStr_Dynamic<type_of_char>& stLib::stStr_Dynamic<type_of_char>::Append( const stStr_Const<const type_of_char>& text, const un length = 0 ) {
 	Append( text.Raw(), length );
 	return *this;
 }
@@ -72,7 +72,7 @@ stStr_Dynamic<type_of_char>& stStr_Dynamic<type_of_char>::Append( const type_of_
 		const un orgLen = Length();
 
 		AppendStr( &m_pdata, text );
-		m_pdata[ orgLen + len + 1 ] = L'\0';
+		Delete( orgLen + len + 1 );
 	}
 	return *this;
 }
@@ -82,15 +82,18 @@ stStr_Dynamic<type_of_char>& stStr_Dynamic<type_of_char>::SetStr( const type_of_
 	if ( nullptr == m_pdata ) {
 		m_pdata = New<type_of_char>();
 		ZeroMem( &m_pdata );
-	} else if ( text == m_pdata ) { // Self Copy Error
+	} else if ( text == m_pdata ) { // Self Copy
+		return *this;
+	}
+
+	if ( IsEqual( text ) ) {
 		return *this;
 	}
 	if ( IsAWiderThanB( text, m_pdata ) ) {
 		SafeDel( &m_pdata );
 		NewAndCpy( &m_pdata, text );
-	}
-	else {
-		strCat( &m_pdata, text );
+	} else {
+		strCpy( &m_pdata, text );
 	}
 	return *this;
 }
@@ -101,13 +104,13 @@ stStr_Dynamic<type_of_char>& stLib::stStr_Dynamic<type_of_char>::SetStr(const st
 }
 
 template<typename type_of_char>
-stStr_Dynamic<type_of_char>& stLib::stStr_Dynamic<type_of_char>::SetStr(const stStr_Const<type_of_char>& text) {
+stStr_Dynamic<type_of_char>& stLib::stStr_Dynamic<type_of_char>::SetStr(const stStr_Const<const type_of_char>& text) {
     return SetStr( text.Raw() );
 }
 
 template<typename type_of_char>
-stStr_Dynamic<type_of_char>& stLib::stStr_Dynamic<type_of_char>::Insert( un index, const type_of_char * text ) {
-    static type_of_char	*store			 = st_new<type_of_char>( strLen( text ) );
+stStr_Dynamic<type_of_char>& stLib::stStr_Dynamic<type_of_char>::Insert( const un index, const type_of_char * text ) {
+    static type_of_char	*store			 = st_allocator.NewArr<type_of_char>( strLen( text ) );
     type_of_char		*behindInsertPos = m_pdata + index;
 	m_pstore							 = store;
 
@@ -125,10 +128,10 @@ stStr_Dynamic<type_of_char>& stLib::stStr_Dynamic<type_of_char>::Insert( un inde
 }
 
 template<typename type_of_char>
-stStr_Dynamic<type_of_char>& stLib::stStr_Dynamic<type_of_char>::Delete(un indexOfFirstOne, const un counts) {
+stStr_Dynamic<type_of_char>& stLib::stStr_Dynamic<type_of_char>::Delete( const un indexOfFirstOne, const un counts ) {
     type_of_char *head = m_pdata + indexOfFirstOne;
 
-    if ( counts == 0 ) {
+    if ( counts == 0 || ( indexOfFirstOne + 1 + counts ) > strLen( head ) ) {
         *head = 0;
     } else {
         memmove( head, head + counts, strLen( head )  * Traits_Char<type_of_char>::unSizeOfChar );
@@ -141,9 +144,9 @@ stStr_Dynamic<type_of_char>& stLib::stStr_Dynamic<type_of_char>::Replace(const u
     type_of_char	*head = m_pdata + indexOfTheFirstChar;
     type_of_char	*end  = m_pdata + indexOfTheFirstChar + strLen( text );
 
-    // ensure a '\0' is coped to the end of the string
+    // ensure a eos is coped to the end of the string
     if ( Length() <= ( indexOfTheFirstChar + strLen( text ) ) ) {
-        *end = L'\0';
+        *end = st_eos<type_of_char>();
     }
     memmove( head, text, strLen( text ) * Traits_Char<type_of_char>::unSizeOfChar );
     return *this;
@@ -166,7 +169,7 @@ stLib::stStr_Dynamic<type_of_char>::stStr_Dynamic(const stStr_Dynamic<type_of_ch
 }
 
 template<typename type_of_char>
-stLib::stStr_Dynamic<type_of_char>::stStr_Dynamic(const stStr_Const<type_of_char>& rhs) : m_pdata( nullptr ), m_pstore( nullptr ) {
+stLib::stStr_Dynamic<type_of_char>::stStr_Dynamic(const stStr_Const<const type_of_char>& rhs) : m_pdata( nullptr ), m_pstore( nullptr ) {
 	SetStr( rhs );
 }
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "stDef.h"
+
 #define st_arg_fill bool
 #define st_arg_fill_1 st_arg_fill
 #define st_arg_fill_2 st_arg_fill, st_arg_fill
@@ -14,7 +16,7 @@
 #define st_arg_fill_value_4 st_arg_fill_value, st_arg_fill_value, st_arg_fill_value, st_arg_fill_value
 #define st_arg_fill_value_5 st_arg_fill_value, st_arg_fill_value, st_arg_fill_value, st_arg_fill_value, st_arg_fill_value
 
-namespace stLib {
+namespace_stLib {
 template <typename T_Return, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7>
 struct Traits_GenericFunctions {
 	typedef T_Return ( * type_p7Args ) ( T1 a, T2 b, T3 c, T4 d, T5 e, T6 f, T7 g );

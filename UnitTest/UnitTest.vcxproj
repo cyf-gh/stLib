@@ -74,8 +74,8 @@
     <IntDir>$(ProjectDir)..\objs\</IntDir>
     <TargetName>UnitTest</TargetName>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
-    <IncludePath>C:\Dev\projects\stLib\UnitTest\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Dev\projects\stLib\bin;C:\Dev\projects\stLib\UnitTest\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\dev\projects\stLib\UnitTest\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\dev\projects\stLib\UnitTest\lib;C:\dev\projects\stLib\bin;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <NMakeOutput>stLib.exe</NMakeOutput>
@@ -90,6 +90,7 @@
     </BuildLog>
     <ClCompile>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <AdditionalDependencies>stLibx86_d.lib;gtestd.lib;%(AdditionalDependencies)</AdditionalDependencies>

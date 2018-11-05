@@ -37,7 +37,7 @@ private:
 		return static_cast<void *>( tpair.first );
 	}
 	void * toUsing( const un32 usableIndex, std::pair<void *, un32> tpair ) {
-		ptrs_using[tpair.first] =  tpair.second;
+		ptrs_using.insert(tpair);
 		ptrs_usable.erase( ptrs_usable.begin() + usableIndex );
 		return static_cast<void *>( tpair.first );
 	}
@@ -62,7 +62,7 @@ public:
 			}
 		}
 		p = new T[objNum];
-		ptrs_using[static_cast<void *>( p )] = objNum;
+		ptrs_using.insert( std::make_pair(static_cast<void *>(p), objNum ) );
 		return p; 
 	}
 	template<typename type>

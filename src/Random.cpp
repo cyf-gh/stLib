@@ -1,6 +1,6 @@
 #include "..\include\stRandom.h"
 
-using namespace stLibUtils;
+using namespace stLib;
 
 /*
 ==============================================================

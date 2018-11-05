@@ -41,6 +41,9 @@ static const ST_RESULTW g_result_null_w = { -9999, L"" };
 static const ST_RESULTA g_result_null_A = { -9999, "" };
 
 }
+
+#define ST_NOERR 0
+
 /** \ingroup Basic Macro Functions
  *  \{
  */

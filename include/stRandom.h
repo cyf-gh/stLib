@@ -11,7 +11,7 @@ Xorshift  from  Marsaglia.
 
 #include "_stdefs.h"
 
-namespace stLibUtils {
+namespace stLib {
 
 /***********************************************************************
 
@@ -54,7 +54,7 @@ public:
                     ~stRandomXORSHIFT();
 };
 
-} /* stLibUtils */
+} /* stLib */
 
 #endif /* !__STLIB_RANDOM_H__ */
 

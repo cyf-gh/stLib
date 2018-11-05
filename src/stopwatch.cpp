@@ -1,6 +1,6 @@
 #include "..\include\stStopwatch.h"
 
-using namespace stLibUtils;
+using namespace stLib;
 
 /*
 ============

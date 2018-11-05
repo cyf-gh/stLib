@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "..\include\stString.h"
 #include "..\include\stStringExtra.h"
-
+#include "..\include\stLib.h"
 #pragma comment( lib, "gtestd.lib" )
 
 TEST( stLib_Test, stString ) {
@@ -38,6 +38,11 @@ TEST( stLib_Test, stString ) {
 	EXPECT_TRUE( stLib::String_Utils::st_TrimSingle( str2, stLib::ST_FrontOrBack::Front ).IsEqual( L"21" ) );
 	str2.SetStr( L"123123123" );
 	EXPECT_TRUE( stLib::String_Utils::st_TrimFrom( str2, L'1', 1, stLib::ST_FrontOrBack::Front ).IsEqual( L"123123" ) );
+}
+
+TEST( stLib_Test, stStream ) {
+	stLib::stStreamT a;
+	stLib::stStreamHelperT b;
 }
 
 int main(int argc, char* argv[]) {

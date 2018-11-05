@@ -11,7 +11,7 @@ Quote : "https://github.com/9chu/fancy2d/blob/master/fancylib/fcyMisc/fcyRandom.
 
 #include "_stdefs.h"
 
-namespace stLibUtils {
+namespace stLib {
 
 /***********************************************************************
 
@@ -37,6 +37,6 @@ public:
 								~stStopWatch();
 };
 
-} /* stLibUtils */
+} /* stLib */
 
 #endif /* !__STLIB_STOPWATCH_H__ */
